@@ -1,56 +1,26 @@
-🧮 Simple Calculator - HFL25-2
-
-Programming with Flutter and Dart
-
-A beginner-friendly console calculator application built with Dart that demonstrates fundamental programming concepts including classes, exception handling, and user input validation.
-✨ Features
-
-    ➕ Addition operations
-    ➖ Subtraction operations
-    🔄 Multiple calculations in one session
-    ✅ Input validation with error handling
-    🚪 Graceful exit with quit command
-    📱 Clean console interface with formatted output
-
-🚀 Quick Start
-Prerequisites
-
-    Dart SDK (version 3.0.0 or higher)
 
 Installation & Setup
 
-    Clone or download the project
-
-    bash
-
-git clone <repository-url>
-# OR download and extract the ZIP file
-
-Navigate to project directory
-
-bash
-
-cd HFL25-2
-
-Run the program
-
-bash
-
+    git clone git@github.com:joykabir/HFL25-2.git
+    cd HFL25-2
+    # Run the program
     dart run bin/calculator.dart
 
-🎮 How to Use
+How to Use
 
-    Start the calculator - Run the command above
-    Enter first number - Type any integer
-    Enter second number - Type any integer
-    Choose operation - Type + for addition or - for subtraction
-    View result - See your calculation result
-    Continue or quit - Type quit at any number prompt to exit
+```bash
+Start the calculator - Run the command above
+Enter first number - Type any integer
+Enter second number - Type any integer
+Choose operation - Type + for addition or - for subtraction
+View result - See your calculation result
+Continue or quit - Type quit to exit
+
+```
 
 Example Session
 
-vbnet
-
+```bash
 === Simple Calculator for New Dart Programmers ===
 Supports: Addition (+) and Subtraction (-) only
 Type "quit" at any number prompt to exit the program.
@@ -69,17 +39,7 @@ Enter the first integer (or "quit" to exit): quit
 
 👋 Thank you for using the Simple Calculator!
 Happy coding with Dart! 🎯
-
-📂 Project Structure
-
-python
-
-HFL25-2/
-├── 📄 pubspec.yaml          # Dart project configuration
-├── 📄 README.md             # This file
-└── 📁 bin/
-    └── 📄 calculator.dart   # Main application file
-
+```
 🎯 Learning Objectives
 
 This project demonstrates key Dart concepts for beginners:
@@ -94,7 +54,7 @@ This project demonstrates key Dart concepts for beginners:
 🛠️ Technical Details
 
     Language: Dart 3.0+
-    Platform: Console/Terminal application
+    Platform: Console/Terminal application (Tested in Ubuntu)
     Dependencies: None (uses built-in dart:io library)
     Architecture: Object-oriented with single responsibility principle
 
