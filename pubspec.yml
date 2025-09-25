@@ -1,6 +1,0 @@
-name: simple_calculator
-description: A beginner-friendly calculator in Dart
-version: 1.0.0
-
-environment:
-  sdk: '>=3.0.0 <4.0.0'

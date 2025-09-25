@@ -1,0 +1,13 @@
+name: hfl25_2
+description: Calculator assignment-1 for HFL25-2 course
+version: 1.0.0
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  # No external dependencies - uses built-in dart:io library
+
+dev_dependencies:
+  test: ^1.24.0
+  lints: ^2.1.0

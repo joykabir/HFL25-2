@@ -1,14 +1,17 @@
 
-Installation & Setup
+### Installation & Setup
 
     git clone git@github.com:joykabir/HFL25-2.git
     cd HFL25-2
     # Run the program
     dart run bin/calculator.dart
+    # Run Unit tests
+    See below
 
-How to Use
+### 🎮 How to Use
 
 ```bash
+
 Start the calculator - Run the command above
 Enter first number - Type any integer
 Enter second number - Type any integer
@@ -18,7 +21,7 @@ Continue or quit - Type quit to exit
 
 ```
 
-Example Session
+### Example Session
 
 ```bash
 === Simple Calculator for New Dart Programmers ===
@@ -40,7 +43,30 @@ Enter the first integer (or "quit" to exit): quit
 👋 Thank you for using the Simple Calculator!
 Happy coding with Dart! 🎯
 ```
-🎯 Learning Objectives
+
+### 🧪 Running Tests
+
+This project includes unit tests. To run tests ->
+
+```bash
+
+# Install dependencies (required for testing)
+dart pub get
+
+# Run all tests
+dart test
+
+# Run tests with detailed output
+dart test --reporter=expanded
+
+# Run specific test file
+dart test test/calculator_test.dart
+
+# Run tests with coverage (optional)
+dart test --coverage=coverage
+```
+
+### 🎯 Learning Objectives
 
 This project demonstrates key Dart concepts for beginners:
 
@@ -51,14 +77,14 @@ This project demonstrates key Dart concepts for beginners:
     Control Flow - Loops, conditionals, and switch statements
     Method Organization - Private methods and code separation
 
-🛠️ Technical Details
+### 🛠️ Technical Details
 
     Language: Dart 3.0+
     Platform: Console/Terminal application (Tested in Ubuntu)
     Dependencies: None (uses built-in dart:io library)
     Architecture: Object-oriented with single responsibility principle
 
-🐛 Error Handling
+### 🐛 Error Handling
 
 The application handles various error scenarios:
 
@@ -67,7 +93,7 @@ The application handles various error scenarios:
     ❌ Unexpected errors - Graceful error reporting
     ✅ User-friendly messages - Clear feedback for all interactions
 
-🤝 Contributing
+### 🤝 Contributing
 
 This is a learning project for Flutter and Dart programming. Feel free to:
 
@@ -76,7 +102,7 @@ This is a learning project for Flutter and Dart programming. Feel free to:
     Add new features (multiplication, division, etc.)
     Improve code documentation
 
-📝 License
+### 📝 License
 
 This project is for educational purposes as part of the HFL25-2 course.
 

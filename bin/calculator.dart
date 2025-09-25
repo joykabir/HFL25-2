@@ -5,8 +5,6 @@ void main() {
   calculator.run();
 }
 
-class QuitException implements Exception {}
-
 class SimpleCalculator {
   static const String _welcomeMessage = '=== Simple Calculator for New Dart Programmers ===';
   static const String _supportedOperations = 'Supports: Addition (+) and Subtraction (-) only';
@@ -22,7 +20,7 @@ class SimpleCalculator {
         int firstNumber = _getIntegerFromUser('Enter the first integer (or "$_quitCommand" to exit): ', allowQuit: true);
         int secondNumber = _getIntegerFromUser('Enter the second integer: ');
         String operation = _getOperationFromUser();
-        int result = _performCalculation(firstNumber, secondNumber, operation);
+        int result = performCalculation(firstNumber, secondNumber, operation);
         _displayResult(firstNumber, secondNumber, operation, result);
         
       } on QuitException {
@@ -35,20 +33,22 @@ class SimpleCalculator {
     }
   }
   
-  void _displayErrorMessage(String message) {
-    print('❌ Error: $message');
+  // Made public for testing
+  int performCalculation(int num1, int num2, String operation) {
+    return switch (operation) {
+      '+' => num1 + num2,
+      '-' => num1 - num2,
+      _ => throw Exception('Unsupported operation: $operation'),
+    };
   }
   
-  void _displayGoodbyeMessage() {
-    print('\n👋 Thank you for using the Simple Calculator!');
-    print('Happy coding with Dart! 🎯');
-  }
-  
-  void _displayResult(int num1, int num2, String operation, int result) {
-    print('\n✅ --- RESULT ---');
-    String operationName = _getOperationName(operation);
-    print('Operation: $operationName');
-    print('Calculation: $num1 $operation $num2 = $result');
+  // Made public for testing
+  String getOperationName(String operation) {
+    return switch (operation) {
+      '+' => 'Addition',
+      '-' => 'Subtraction', 
+      _ => 'Unknown Operation',
+    };
   }
   
   void _displayWelcomeMessage() {
@@ -93,19 +93,21 @@ class SimpleCalculator {
     }
   }
   
-  String _getOperationName(String operation) {
-    return switch (operation) {
-      '+' => 'Addition',
-      '-' => 'Subtraction', 
-      _ => 'Unknown Operation',
-    };
+  void _displayResult(int num1, int num2, String operation, int result) {
+    print('\n✅ --- RESULT ---');
+    String operationName = getOperationName(operation);
+    print('Operation: $operationName');
+    print('Calculation: $num1 $operation $num2 = $result');
   }
   
-  int _performCalculation(int num1, int num2, String operation) {
-    return switch (operation) {
-      '+' => num1 + num2,
-      '-' => num1 - num2,
-      _ => throw Exception('Unsupported operation: $operation'),
-    };
+  void _displayErrorMessage(String message) {
+    print('❌ Error: $message');
+  }
+  
+  void _displayGoodbyeMessage() {
+    print('\n👋 Thank you for using the Simple Calculator!');
+    print('Happy coding with Dart! 🎯');
   }
 }
+
+class QuitException implements Exception {}
