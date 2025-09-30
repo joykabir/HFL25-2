@@ -1,8 +1,10 @@
 
 
-### 🎮 How to Run
+### How to Run
 
 ```bash
+
+dart run bin/calculator.dart
 
 Start the calculator - Run the command above
 Enter first number - Type any integer
@@ -10,7 +12,6 @@ Enter second number - Type any integer
 Choose operation - Type + for addition or - for subtraction
 View result - See your calculation result
 Continue or quit - Type quit to exit
-
 ```
 
 ### Example Session
@@ -25,15 +26,12 @@ Enter the first integer (or "quit" to exit): 25
 Enter the second integer: 10
 Choose operation (+) for addition or (-) for subtraction: +
 
-✅ --- RESULT ---
+--- RESULT ---
 Operation: Addition
 Calculation: 25 + 10 = 35
 
 --- New Calculation ---
 Enter the first integer (or "quit" to exit): quit
-
-👋 Thank you for using the Simple Calculator!
-Happy coding with Dart! 🎯
 ```
 
 ### 🧪 Running Tests
@@ -57,7 +55,7 @@ dart test test/calculator_test.dart
 # Run tests with coverage (optional)
 dart test --coverage=coverage
 ```
-### 🐛 Error Handling
+### Error Handling
 
 The application handles various error scenarios:
 
