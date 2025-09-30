@@ -9,10 +9,10 @@ This repository contains all programming assignments and projects for the HFL25-
 ### [📁 v01 - Simple Calculator](./v01/)
 **Assignment 1**: Console-based calculator application
 - ➕ Addition and subtraction operations
-- 🔄 Multiple calculations support
+- 🔄 Multiple calculations until quit
 - ✅ Input validation and error handling
-- 🧪 Unit testing with comprehensive coverage
-- **Status**: ✅ Complete
+- 🧪 Unit testing
+- **Status**: ✅ Submitted
 
 ### [📁 v02 - Future Project](./v02/)
 **Assignment 2**: _To be announced_
