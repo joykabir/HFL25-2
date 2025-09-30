@@ -17,7 +17,7 @@ Continue or quit - Type quit to exit
 ### Example Session
 
 ```bash
-=== Simple Calculator for New Dart Programmers ===
+=== Simple Calculator ===
 Supports: Addition (+) and Subtraction (-) only
 Type "quit" at any number prompt to exit the program.
 
@@ -34,7 +34,7 @@ Calculation: 25 + 10 = 35
 Enter the first integer (or "quit" to exit): quit
 ```
 
-### 🧪 Running Tests
+###  Running Tests
 
 This project includes unit tests. To run tests ->
 
@@ -58,7 +58,6 @@ dart test --coverage=coverage
 ### Error Handling
 
 The application handles various error scenarios:
-
-    ❌ Invalid integers - Shows helpful error messages
-    ❌ Invalid operations - Only accepts + and -
-    ❌ Unexpected errors - Graceful error reporting
+❌ Invalid integers - Shows helpful error messages
+❌ Invalid operations - Only accepts + and -
+❌ Unexpected errors - Graceful error reporting
