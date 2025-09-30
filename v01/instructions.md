@@ -64,4 +64,3 @@ The application handles various error scenarios:
     ❌ Invalid integers - Shows helpful error messages
     ❌ Invalid operations - Only accepts + and -
     ❌ Unexpected errors - Graceful error reporting
-    ✅ User-friendly messages - Clear feedback for all interactions
