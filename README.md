@@ -1,3 +1,5 @@
+[![Dart](https://github.com/joykabir/HFL25-2/actions/workflows/dart.yml/badge.svg?branch=develop)](https://github.com/joykabir/HFL25-2/actions/workflows/dart.yml)
+
 # HFL25-2: Programming with Flutter and Dart
 
 **Course Projects and Assignments Repository**
@@ -18,7 +20,6 @@ This repository contains all programming assignments and projects for the HFL25-
 **Assignment 2**: _To be announced_
 - **Status**: 📋 Planned
 
-## 🚀 Quick Start
 
 ### Prerequisites
 - [Dart SDK](https://dart.dev/get-dart) (version 3.0.0 or higher)
