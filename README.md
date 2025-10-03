@@ -1,3 +1,5 @@
+[![Dart](https://github.com/joykabir/HFL25-2/actions/workflows/dart.yml/badge.svg?branch=develop)](https://github.com/joykabir/HFL25-2/actions/workflows/dart.yml)
+
 # HFL25-2: Programming with Flutter and Dart
 
 **Course Projects and Assignments Repository**
