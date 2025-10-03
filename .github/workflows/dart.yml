@@ -1,4 +1,4 @@
-name: Dart
+name: Dart Multi-Project (Smart)
 
 on:
   push:
@@ -7,32 +7,82 @@ on:
     branches: [ "develop" ]
 
 jobs:
-  build:
+  changes:
     runs-on: ubuntu-latest
+    outputs:
+      projects: ${{ steps.changes.outputs.projects }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Detect changed projects
+        id: changes
+        run: |
+          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            # Get changed files in PR
+            changed_files=$(git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.sha }})
+          else
+            # Get changed files in push
+            changed_files=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }})
+          fi
+          
+          echo "Changed files:"
+          echo "$changed_files"
+          
+          # Find affected projects
+          projects=()
+          for file in $changed_files; do
+            # Get the top-level directory (v01, v02, etc.)
+            project_dir=$(echo "$file" | cut -d'/' -f1)
+            if [[ -f "$project_dir/pubspec.yaml" ]] && [[ ! " ${projects[@]} " =~ " ${project_dir} " ]]; then
+              projects+=("$project_dir")
+            fi
+          done
+          
+          # If no projects changed or if it's the first commit, test all projects
+          if [[ ${#projects[@]} -eq 0 ]] || [[ "${{ github.event.before }}" == "0000000000000000000000000000000000000000" ]]; then
+            projects=($(find . -name "pubspec.yaml" -not -path "./.dart_tool/*" | xargs dirname | sed 's|^\./||'))
+          fi
+          
+          # Convert to JSON array
+          printf -v projects_json '%s\n' "${projects[@]}" | jq -R . | jq -s .
+          echo "projects=$projects_json" >> $GITHUB_OUTPUT
+          echo "Projects to test: ${projects[@]}"
+
+  test:
+    needs: changes
+    if: needs.changes.outputs.projects != '[]'
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        project: ${{ fromJson(needs.changes.outputs.projects) }}
+      fail-fast: false
+
     container:
-      image: dart:stable  # or dart:3.2.3 for specific version
+      image: dart:stable
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Verify Dart installation
-        run: dart --version
-
-      - name: Install dependencies
-        run: dart pub get
-
-      - name: Verify formatting
-        run: dart format --output=none --set-exit-if-changed .
-
-      - name: Analyze project source
-        run: dart analyze --fatal-infos
-
-      - name: Run tests
-        run: dart test
-
-      - name: Generate coverage
+      - name: Test ${{ matrix.project }}
+        working-directory: ${{ matrix.project }}
         run: |
-          dart pub global activate coverage
-          dart pub global run coverage:test_with_coverage
-        continue-on-error: true
+          echo "🔍 Testing project: ${{ matrix.project }}"
+          dart --version
+          
+          echo "📦 Installing dependencies..."
+          dart pub get
+          
+          echo "🎨 Checking formatting..."
+          dart format --output=none --set-exit-if-changed .
+          
+          echo "🔍 Analyzing code..."
+          dart analyze --fatal-infos
+          
+          echo "🧪 Running tests..."
+          dart test
+          
+          echo "✅ ${{ matrix.project }} completed successfully"
