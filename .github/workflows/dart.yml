@@ -1,4 +1,4 @@
-name: Dart Multi-Project (Smart)
+name: Dart Multi-Project
 
 on:
   push:
@@ -7,50 +7,24 @@ on:
     branches: [ "develop" ]
 
 jobs:
-  changes:
+  debug:
     runs-on: ubuntu-latest
-    outputs:
-      projects: ${{ steps.changes.outputs.projects }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
-      - name: Detect changed projects
-        id: changes
+      - name: Debug project discovery
         run: |
-          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
-            # Get changed files in PR
-            changed_files=$(git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.sha }})
-          else
-            # Get changed files in push
-            changed_files=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }})
-          fi
+          echo "🔍 Repository structure:"
+          find . -name "pubspec.yaml" -not -path "./.dart_tool/*" | head -20
           
-          echo "Changed files:"
-          echo "$changed_files"
+          echo ""
+          echo "🔍 Directory listing:"
+          ls -la
           
-          # Find affected projects
-          projects=()
-          for file in $changed_files; do
-            # Get the top-level directory (v01, v02, etc.)
-            project_dir=$(echo "$file" | cut -d'/' -f1)
-            if [[ -f "$project_dir/pubspec.yaml" ]] && [[ ! " ${projects[@]} " =~ " ${project_dir} " ]]; then
-              projects+=("$project_dir")
-            fi
-          done
-          
-          # If no projects changed or if it's the first commit, test all projects
-          if [[ ${#projects[@]} -eq 0 ]] || [[ "${{ github.event.before }}" == "0000000000000000000000000000000000000000" ]]; then
-            projects=($(find . -name "pubspec.yaml" -not -path "./.dart_tool/*" | xargs dirname | sed 's|^\./||'))
-          fi
-          
-          # Convert to JSON array
-          printf -v projects_json '%s\n' "${projects[@]}" | jq -R . | jq -s .
-          echo "projects=$projects_json" >> $GITHUB_OUTPUT
-          echo "Projects to test: ${projects[@]}"
-
+          echo ""
+          echo "🔍 Project directories:"
+          find . -maxdepth 1 -type d -name "v*" | sort
   test:
     needs: changes
     if: needs.changes.outputs.projects != '[]'
