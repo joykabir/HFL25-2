@@ -1,4 +1,4 @@
-name: Run Dart Tests on PR
+name: Run Tests on Merge Requests to Develop
 
 on:
   pull_request:
