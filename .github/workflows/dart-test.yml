@@ -1,34 +1,60 @@
-name: Run Tests on Merge Requests to Develop
+name: Run Tests on MR to Develop
 
 on:
   pull_request:
     branches:
       - develop
+  workflow_dispatch:
 
 jobs:
   run-tests:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
+      - name: 📥 Checkout code
         uses: actions/checkout@v4
 
-      - name: Extract folder name from branch
+      - name: 🔍 Extract folder name from branch
         id: extract_folder
         run: |
+          echo "::group::Extracting version folder from branch name"
           folder_name=$(echo "${{ github.head_ref }}" | grep -o 'v[0-9][0-9]' | head -n 1)
+          
+          if [ -z "$folder_name" ]; then
+            echo "❌ No version folder found in branch name (expected pattern: v[0-9][0-9])"
+            echo "Branch: ${{ github.head_ref }}"
+          else
+            echo "✅ Found version folder: $folder_name"
+          fi
+          
           echo "folder_name=$folder_name" >> $GITHUB_OUTPUT
+          echo "::endgroup::"
 
-      - name: Setup Dart
+      - name: 🎯 Setup Dart SDK
         uses: dart-lang/setup-dart@v1
         if: steps.extract_folder.outputs.folder_name != ''
         with:
-          sdk: '3.8'  
-      - name: Install dependencies
-        if: steps.extract_folder.outputs.folder_name != ''
-        working-directory: ${{ steps.extract_folder.outputs.folder_name }}
-        run: dart pub get
+          sdk: '3.8'
 
-      - name: Run tests
+      - name: 📦 Install dependencies
         if: steps.extract_folder.outputs.folder_name != ''
         working-directory: ${{ steps.extract_folder.outputs.folder_name }}
-        run: dart test
+        run: |
+          echo "::group::Installing Dart dependencies"
+          echo "📂 Working directory: ${{ steps.extract_folder.outputs.folder_name }}"
+          dart pub get
+          echo "::endgroup::"
+
+      - name: 🧪 Run tests
+        if: steps.extract_folder.outputs.folder_name != ''
+        working-directory: ${{ steps.extract_folder.outputs.folder_name }}
+        run: |
+          echo "::group::Running Dart tests"
+          echo "📂 Working directory: ${{ steps.extract_folder.outputs.folder_name }}"
+          dart test
+          echo "::endgroup::"
+
+      - name: ⏭️ Skip notification
+        if: steps.extract_folder.outputs.folder_name == ''
+        run: |
+          echo "::warning::Tests skipped - no version folder found in branch name"
+          echo "💡 Branch names should contain a version pattern like 'v01', 'v23', etc."
