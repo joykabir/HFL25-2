@@ -1,4 +1,4 @@
-name: Run Tests on Merge Requests to Develop
+name: Run Tests on MR to Develop
 
 on:
   pull_request:
