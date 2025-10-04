@@ -1,5 +1,7 @@
 [![Dart](https://github.com/joykabir/HFL25-2/actions/workflows/dart.yml/badge.svg?branch=develop)](https://github.com/joykabir/HFL25-2/actions/workflows/dart.yml)
 
+[![Run Dart Tests on PR](https://github.com/joykabir/HFL25-2/actions/workflows/dart-test.yml/badge.svg?branch=develop)](https://github.com/joykabir/HFL25-2/actions/workflows/dart-test.yml)
+
 # HFL25-2: Programming with Flutter and Dart
 
 **Course Projects and Assignments Repository**
