@@ -3,7 +3,7 @@
 # separate terms of service, privacy policy, and support
 # documentation.
 
-name: Auto readme creation for new version folders
+name: Auto Readme.md creation
 
 on:
   push:
