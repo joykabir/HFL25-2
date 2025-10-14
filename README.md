@@ -18,9 +18,16 @@ This repository contains all programming assignments and projects for the HFL25-
 - 🧪 Unit testing
 - **Status**: ✅ Submitted
 
-### [📁 v02 - Future Project](./v02/)
-**Assignment 2**: _To be announced_
-- **Status**: 📋 Planned
+
+### [📁 v02 - HeroDex 3000](./v02/)
+**Assignment 2**: HeroDex 3000
+- 🦸 Add and manage superheroes with powers and attributes
+- 📋 Display heroes with detailed stats
+- 🔍 Search heroes by name or powers
+- 💾 JSON storage for hero data
+- 🎨 Interactive command-line interface
+- 🧪 Unit testing
+- **Status**: ✅ Submitted
 
 
 ### Prerequisites
