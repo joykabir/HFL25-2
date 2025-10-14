@@ -29,3 +29,12 @@ doc/api/
 .flutter-plugins-dependencies
 .dart_tool
 coverage/
+
+# IntelliJ
+*.iml
+*.ipr
+*.iws
+.idea/
+
+# Mac
+.DS_Store
