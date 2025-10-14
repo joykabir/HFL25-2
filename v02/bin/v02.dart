@@ -7,22 +7,21 @@ void main(List<String> arguments) {
   print('═══════════════════════════════════════');
   print('   🦸 Welcome to HeroDex 3000! 🦸');
   print('═══════════════════════════════════════\n');
-  
-  // Load heroes from JSON file
+
   List<Hero> heroes = v02.loadHeroes();
-  
+
   bool running = true;
-  
+
   while (running) {
     v02.printMenu();
     stdout.write('Choose an option (1-4): ');
     final input = stdin.readLineSync();
     final choice = int.tryParse(input ?? '');
-    
+
     switch (choice) {
       case 1:
         v02.addHero(heroes);
-        v02.saveHeroes(heroes);
+        v02.saveHeroesToJson(heroes);
         break;
       case 2:
         v02.showHeroes(heroes);
