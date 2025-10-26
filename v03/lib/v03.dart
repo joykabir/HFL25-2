@@ -1,3 +1,168 @@
+import 'dart:convert';
+import 'dart:io';
+
+import 'models/hero.dart';
+
+const String heroesFile = 'heroes.json';
+
+
+void addHero(List<Hero> heroes) {
+  print('\nAdding a new hero...');
+
+  stdout.write('Enter hero name: ');
+  final name = stdin.readLineSync() ?? '';
+
+  int strength = 0;
+  while (true) {
+    stdout.write('Enter strength (integer): ');
+    final strengthInput = stdin.readLineSync();
+    final parsed = int.tryParse(strengthInput ?? '');
+    if (parsed != null) {
+      strength = parsed;
+      break;
+    } else {
+      print('Please enter a valid integer.');
+    }
+  }
+
+  stdout.write('Enter special power (optional): ');
+  final specialPower = stdin.readLineSync() ?? '';
+
+  stdout.write('Enter gender (optional): ');
+  final gender = stdin.readLineSync() ?? '';
+
+  stdout.write('Enter race (optional): ');
+  final race = stdin.readLineSync() ?? '';
+
+  stdout.write('Enter alignment (good/evil, optional): ');
+  final alignment = stdin.readLineSync() ?? '';
+
+  final hero = Hero(
+    name: name.isEmpty ? 'Unknown Hero' : name,
+    powerstats: Powerstats(strength: strength),
+    appearance: Appearance(gender: gender, race: race),
+    biography: Biography(alignment: alignment),
+    specialPower: specialPower.isEmpty ? null : specialPower,
+  );
+
+  heroes.add(hero);
+  print('\nHero "${hero.name}" added successfully!\n');
+}
+
+// Keep the original calculate function for backwards compatibility
 int calculate() {
   return 6 * 7;
+}
+
+// Load heroes from JSON file
+List<Hero> loadHeroes() {
+  final file = File(heroesFile);
+
+  if (!file.existsSync()) {
+    return [];
+  }
+
+  try {
+    final content = file.readAsStringSync();
+    if (content.trim().isEmpty) {
+      return [];
+    }
+
+    final List<dynamic> jsonData = jsonDecode(content);
+    final heroes = jsonData
+        .map((json) => Hero.fromJson(json as Map<String, dynamic>))
+        .toList();
+
+    // ✅ REMOVED: _nextId update logic
+
+    return heroes;
+  } catch (e) {
+    print('Error loading heroes: $e');
+    return [];
+  }
+}
+
+void printMenu() {
+  print('─────────────────────────────────────');
+  print('  MENU:');
+  print('  1. Add hero');
+  print('  2. Show heroes');
+  print('  3. Search heroes');
+  print('  4. Exit');
+  print('─────────────────────────────────────');
+}
+
+void saveHeroesToJson(List<Hero> heroes) {
+  try {
+    final file = File(heroesFile);
+    final jsonData = jsonEncode(heroes.map((hero) => hero.toJson()).toList());
+    file.writeAsStringSync(jsonData);
+  } catch (e) {
+    print('Error saving heroes: $e');
+  }
+}
+
+// Search heroes by name
+void searchHeroes(List<Hero> heroes) {
+  if (heroes.isEmpty) {
+    print('\nNo heroes to search.\n');
+    return;
+  }
+
+  stdout.write('\nEnter name or letter to search: ');
+  final query = (stdin.readLineSync() ?? '').toLowerCase().trim();
+
+  if (query.isEmpty) {
+    print('Search query cannot be empty.\n');
+    return;
+  }
+
+  final matches = heroes.where((hero) {
+    return hero.name.toLowerCase().contains(query);
+  }).toList();
+
+  if (matches.isEmpty) {
+    print('\nNo heroes found matching "$query".\n');
+  } else {
+    print('\nFound ${matches.length} hero(es) matching "$query":');
+    print('─────────────────────────────────────');
+    for (var hero in matches) {
+      _printHero(hero);
+    }
+    print('─────────────────────────────────────\n');
+  }
+}
+
+// Show all heroes sorted by strength (strongest first)
+void showHeroes(List<Hero> heroes) {
+  if (heroes.isEmpty) {
+    print('\nNo heroes in the database yet.\n');
+    return;
+  }
+
+  final sortedHeroes = List<Hero>.from(heroes);
+  sortedHeroes
+      .sort((a, b) => b.powerstats.strength.compareTo(a.powerstats.strength));
+
+  print('\nALL HEROES (sorted by strength):');
+  print('═══════════════════════════════════════');
+
+  for (var hero in sortedHeroes) {
+    _printHero(hero);
+  }
+
+  print('═══════════════════════════════════════\n');
+}
+
+// Helper: Print a single hero
+void _printHero(Hero hero) {
+  final specialPowerDisplay = hero.specialPower ?? 'None';
+
+  print('  ID: ${hero.id} | Name: ${hero.name}');
+  print('    Strength: ${hero.powerstats.strength}');
+  print('    Special Power: $specialPowerDisplay');
+  print(
+      '    Gender: ${hero.appearance.gender} | Race: ${hero.appearance.race}');
+  print('    Alignment: ${hero.biography.alignment}');
+  print('');
 }
