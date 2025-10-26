@@ -1,85 +1,140 @@
-import 'dart:convert';
 import 'dart:io';
 
-import 'models/hero.dart';
+import 'models/appearance.dart';
+import 'models/biography.dart';
+import 'models/connections.dart';
+import 'models/heroimage.dart';
+import 'models/heromodel.dart';
+import 'models/powerstats.dart';
+import 'models/work.dart';
+import 'services/hero_data_manager.dart';
 
-const String heroesFile = 'heroes.json';
-
-
-void addHero(List<Hero> heroes) {
+// Add a new hero (interactive)
+void addHeroInteractive(HeroDataManager heroDataManager) {
   print('\nAdding a new hero...');
 
   stdout.write('Enter hero name: ');
   final name = stdin.readLineSync() ?? '';
 
-  int strength = 0;
-  while (true) {
-    stdout.write('Enter strength (integer): ');
-    final strengthInput = stdin.readLineSync();
-    final parsed = int.tryParse(strengthInput ?? '');
-    if (parsed != null) {
-      strength = parsed;
-      break;
-    } else {
-      print('Please enter a valid integer.');
-    }
+  if (name.isEmpty) {
+    print('Please enter a valid name.\n');
+    return;
   }
 
-  stdout.write('Enter special power (optional): ');
-  final specialPower = stdin.readLineSync() ?? '';
+  // Powerstats
+  stdout.write('Enter intelligence (0-100): ');
+  final intelligence = stdin.readLineSync() ?? '0';
 
+  stdout.write('Enter strength (0-100): ');
+  final strength = stdin.readLineSync() ?? '0';
+
+  stdout.write('Enter speed (0-100): ');
+  final speed = stdin.readLineSync() ?? '0';
+
+  stdout.write('Enter durability (0-100): ');
+  final durability = stdin.readLineSync() ?? '0';
+
+  stdout.write('Enter power (0-100): ');
+  final power = stdin.readLineSync() ?? '0';
+
+  stdout.write('Enter combat (0-100): ');
+  final combat = stdin.readLineSync() ?? '0';
+
+  // Biography
+  stdout.write('Enter full name (optional): ');
+  final fullName = stdin.readLineSync() ?? '';
+
+  stdout.write('Enter alter egos (optional): ');
+  final alterEgos = stdin.readLineSync() ?? '';
+
+  stdout.write('Enter alignment (good/evil, optional): ');
+  final alignment = stdin.readLineSync() ?? '';
+
+  stdout.write('Enter first appearance (optional): ');
+  final firstAppearance = stdin.readLineSync() ?? '';
+
+  stdout.write('Enter publisher (optional): ');
+  final publisher = stdin.readLineSync() ?? '';
+
+  // Appearance
   stdout.write('Enter gender (optional): ');
   final gender = stdin.readLineSync() ?? '';
 
   stdout.write('Enter race (optional): ');
   final race = stdin.readLineSync() ?? '';
 
-  stdout.write('Enter alignment (good/evil, optional): ');
-  final alignment = stdin.readLineSync() ?? '';
+  stdout.write('Enter eye color (optional): ');
+  final eyeColor = stdin.readLineSync() ?? '';
 
-  final hero = Hero(
-    name: name.isEmpty ? 'Unknown Hero' : name,
-    powerstats: Powerstats(strength: strength),
-    appearance: Appearance(gender: gender, race: race),
-    biography: Biography(alignment: alignment),
-    specialPower: specialPower.isEmpty ? null : specialPower,
+  stdout.write('Enter hair color (optional): ');
+  final hairColor = stdin.readLineSync() ?? '';
+
+  // Work
+  stdout.write('Enter occupation (optional): ');
+  final occupation = stdin.readLineSync() ?? '';
+
+  stdout.write('Enter base (optional): ');
+  final base = stdin.readLineSync() ?? '';
+
+  // Connections
+  stdout.write('Enter group affiliation (optional): ');
+  final groupAffiliation = stdin.readLineSync() ?? '';
+
+  stdout.write('Enter relatives (optional): ');
+  final relatives = stdin.readLineSync() ?? '';
+
+  // Image
+  stdout.write('Enter image URL (optional): ');
+  final imageUrl = stdin.readLineSync() ?? '';
+
+  // Create HeroModel object
+  final hero = HeroModel(
+    name: name,
+    powerstats: Powerstats(
+      intelligence: intelligence,
+      strength: strength,
+      speed: speed,
+      durability: durability,
+      power: power,
+      combat: combat,
+    ),
+    biography: Biography(
+      fullName: fullName,
+      alterEgos: alterEgos,
+      aliases: [],
+      placeOfBirth: '',
+      firstAppearance: firstAppearance,
+      publisher: publisher,
+      alignment: alignment,
+    ),
+    appearance: Appearance(
+      gender: gender,
+      race: race,
+      height: [],
+      weight: [],
+      eyeColor: eyeColor,
+      hairColor: hairColor,
+    ),
+    work: Work(
+      occupation: occupation,
+      base: base,
+    ),
+    connections: Connections(
+      groupAffiliation: groupAffiliation,
+      relatives: relatives,
+    ),
+    image: HeroImage(
+      url: imageUrl,
+    ),
   );
 
-  heroes.add(hero);
+  heroDataManager.addHero(hero);
   print('\nHero "${hero.name}" added successfully!\n');
 }
 
 // Keep the original calculate function for backwards compatibility
 int calculate() {
   return 6 * 7;
-}
-
-// Load heroes from JSON file
-List<Hero> loadHeroes() {
-  final file = File(heroesFile);
-
-  if (!file.existsSync()) {
-    return [];
-  }
-
-  try {
-    final content = file.readAsStringSync();
-    if (content.trim().isEmpty) {
-      return [];
-    }
-
-    final List<dynamic> jsonData = jsonDecode(content);
-    final heroes = jsonData
-        .map((json) => Hero.fromJson(json as Map<String, dynamic>))
-        .toList();
-
-    // ✅ REMOVED: _nextId update logic
-
-    return heroes;
-  } catch (e) {
-    print('Error loading heroes: $e');
-    return [];
-  }
 }
 
 void printMenu() {
@@ -92,24 +147,14 @@ void printMenu() {
   print('─────────────────────────────────────');
 }
 
-void saveHeroesToJson(List<Hero> heroes) {
-  try {
-    final file = File(heroesFile);
-    final jsonData = jsonEncode(heroes.map((hero) => hero.toJson()).toList());
-    file.writeAsStringSync(jsonData);
-  } catch (e) {
-    print('Error saving heroes: $e');
-  }
-}
-
-// Search heroes by name
-void searchHeroes(List<Hero> heroes) {
-  if (heroes.isEmpty) {
+// Search heroes by name (interactive)
+void searchHeroesInteractive(HeroDataManager heroDataManager) {
+  if (heroDataManager.heroes.isEmpty) {
     print('\nNo heroes to search.\n');
     return;
   }
 
-  stdout.write('\nEnter name or letter to search: ');
+  stdout.write('\nEnter name to search: ');
   final query = (stdin.readLineSync() ?? '').toLowerCase().trim();
 
   if (query.isEmpty) {
@@ -117,9 +162,7 @@ void searchHeroes(List<Hero> heroes) {
     return;
   }
 
-  final matches = heroes.where((hero) {
-    return hero.name.toLowerCase().contains(query);
-  }).toList();
+  final matches = heroDataManager.searchHeroesByName(query);
 
   if (matches.isEmpty) {
     print('\nNo heroes found matching "$query".\n');
@@ -133,21 +176,17 @@ void searchHeroes(List<Hero> heroes) {
   }
 }
 
-// Show all heroes sorted by strength (strongest first)
-void showHeroes(List<Hero> heroes) {
-  if (heroes.isEmpty) {
+// Show all heroes
+void showHeroes(List<HeroModel> heroesToDisplay) {
+  if (heroesToDisplay.isEmpty) {
     print('\nNo heroes in the database yet.\n');
     return;
   }
 
-  final sortedHeroes = List<Hero>.from(heroes);
-  sortedHeroes
-      .sort((a, b) => b.powerstats.strength.compareTo(a.powerstats.strength));
-
   print('\nALL HEROES (sorted by strength):');
   print('═══════════════════════════════════════');
 
-  for (var hero in sortedHeroes) {
+  for (var hero in heroesToDisplay) {
     _printHero(hero);
   }
 
@@ -155,14 +194,39 @@ void showHeroes(List<Hero> heroes) {
 }
 
 // Helper: Print a single hero
-void _printHero(Hero hero) {
-  final specialPowerDisplay = hero.specialPower ?? 'None';
-
+void _printHero(HeroModel hero) {
   print('  ID: ${hero.id} | Name: ${hero.name}');
+  
+  print('  POWERSTATS:');
+  print('    Intelligence: ${hero.powerstats.intelligence}');
   print('    Strength: ${hero.powerstats.strength}');
-  print('    Special Power: $specialPowerDisplay');
-  print(
-      '    Gender: ${hero.appearance.gender} | Race: ${hero.appearance.race}');
+  print('    Speed: ${hero.powerstats.speed}');
+  print('    Durability: ${hero.powerstats.durability}');
+  print('    Power: ${hero.powerstats.power}');
+  print('    Combat: ${hero.powerstats.combat}');
+  
+  print('  BIOGRAPHY:');
+  print('    Full Name: ${hero.biography.fullName}');
+  print('    Alter Egos: ${hero.biography.alterEgos}');
   print('    Alignment: ${hero.biography.alignment}');
+  print('    First Appearance: ${hero.biography.firstAppearance}');
+  print('    Publisher: ${hero.biography.publisher}');
+  
+  print('  APPEARANCE:');
+  print('    Gender: ${hero.appearance.gender}');
+  print('    Race: ${hero.appearance.race}');
+  print('    Eye Color: ${hero.appearance.eyeColor}');
+  print('    Hair Color: ${hero.appearance.hairColor}');
+  
+  print('  WORK:');
+  print('    Occupation: ${hero.work.occupation}');
+  print('    Base: ${hero.work.base}');
+  
+  print('  CONNECTIONS:');
+  print('    Group Affiliation: ${hero.connections.groupAffiliation}');
+  print('    Relatives: ${hero.connections.relatives}');
+  
+  print('  IMAGE:');
+  print('    URL: ${hero.image.url}');
   print('');
 }
