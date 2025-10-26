@@ -2,39 +2,57 @@
 [![Auto readme creation for new version folders](https://github.com/joykabir/HFL25-2/actions/workflows/add-readme.yml/badge.svg)](https://github.com/joykabir/HFL25-2/actions/workflows/add-readme.yml)
 
 [![style: lint](https://img.shields.io/badge/style-lint-4BC0F5.svg)](https://pub.dev/packages/lint)
+
 # HFL25-2: Programming with Flutter and Dart
 
-**Course Projects and Assignments Repository**
+Course Projects and Assignments Repository
 
 This repository contains all programming assignments and projects for the HFL25-2 course, focusing on Flutter and Dart development.
 
-## 📚 Repository Overview
+## Repository Overview
 
-### [📁 v01 - Simple Calculator](./v01/)
-**Assignment 1**: Console-based calculator application
-- ➕ Addition and subtraction operations
-- 🔄 Multiple calculations until quit
-- ✅ Input validation and error handling
-- 🧪 Unit testing
-- **Status**: ✅ Submitted
+### v01 - Simple Calculator
 
+Assignment 1: Console-based calculator application
 
-### [📁 v02 - HeroDex 3000](./v02/)
-**Assignment 2**: HeroDex 3000
-- 🦸 Add and manage superheroes with powers and attributes
-- 📋 Display heroes with detailed stats
-- 🔍 Search heroes by name or powers
-- 💾 JSON storage for hero data
-- 🎨 Interactive command-line interface
-- 🧪 Unit testing
-- **Status**: ✅ Submitted
+Features:
+- Addition and subtraction operations
+- Multiple calculations until quit
+- Input validation and error handling
+- Unit testing
 
 
-### Prerequisites
-- [Dart SDK](https://dart.dev/get-dart) (version 3.0.0 or higher)
+### v02 - HeroDex 3000
+
+Assignment 2: HeroDex 3000
+
+Features:
+- Add and manage superheroes with powers and attributes
+- Display heroes with detailed stats
+- Search heroes by name or powers
+- JSON storage for hero data
+- Interactive command-line interface
+- Unit testing
+
+
+### v03 - HeroDex 3000 Modular
+
+Assignment 3: Continuing v02 but with modular structure in code and more functionalities
+
+Features:
+- Refactored modular code architecture
+- Enhanced hero management system
+- Advanced search and filtering capabilities
+- Improved data persistence
+- Additional features and optimizations
+
+
+## Prerequisites
+
+- Dart SDK (version 3.0.0 or higher)
 - Git for cloning the repository
 
-### Installation & Setup
+## Installation & Setup
 
 ```bash
 # Clone the repository
@@ -52,35 +70,4 @@ dart run bin/calculator.dart
 
 # Run tests
 dart test
-```
-## 🔧 How to Add a Function in Dart
 
-Functions are reusable blocks of code that perform specific tasks. Here's how to create and use functions in Dart with simple examples.
-
-### 📝 Basic Function Syntax
-
-```dart
-returnType functionName(parameters) {
-  return value;
-}
-
-1. Function with No Parameters
-void sayHello() {
-  print('Hello, World!');
-}
-
-void main() {
-  sayHello();
-}
-
-
-3. Function that Returns a Value
-int addNumbers(int a, int b) {
-  return a + b;
-}
-
-void main() {
-  int result = addNumbers(5, 3);
-  print('5 + 3 = $result'); // Output: 5 + 3 = 8
-}
-```
