@@ -10,12 +10,10 @@ class HeroDataManager implements HeroDataManaging {
   final String _filePath = 'heroes.json';
   late List<HeroModel> _heroes;
 
-  // Factory constructor for singleton
   factory HeroDataManager() {
     return _instance;
   }
 
-  // Private constructor
   HeroDataManager._internal() {
     _heroes = [];
   }
@@ -33,7 +31,6 @@ class HeroDataManager implements HeroDataManaging {
     _heroes.removeWhere((hero) => hero.id == id);
   }
 
-  // Additional useful method
   List<HeroModel> getHeroesSortedByStrength() {
     final sorted = List<HeroModel>.from(_heroes);
     sorted.sort((a, b) {
