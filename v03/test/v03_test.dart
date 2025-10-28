@@ -1,4 +1,4 @@
-import 'package:v03/v03.dart';
+import 'package:v03/hero_interactive.dart';
 import 'package:test/test.dart';
 
 void main() {

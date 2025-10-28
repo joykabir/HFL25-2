@@ -1,16 +1,15 @@
 import 'dart:io';
 
-import 'models/appearance.dart';
-import 'models/biography.dart';
-import 'models/connections.dart';
-import 'models/heroimage.dart';
-import 'models/heromodel.dart';
-import 'models/powerstats.dart';
-import 'models/work.dart';
-import 'services/hero_data_manager.dart';
+import 'package:v03/models/appearance.dart';
+import 'package:v03/models/biography.dart';
+import 'package:v03/models/connections.dart';
+import 'package:v03/models/heroimage.dart';
+import 'package:v03/models/heromodel.dart';
+import 'package:v03/models/powerstats.dart';
+import 'package:v03/models/work.dart';
+import 'package:v03/services/hero_data_manager.dart';
 
-// Add a new hero (interactive)
-void addHeroInteractive(HeroDataManager heroDataManager) {
+Future<void> addHeroInteractive(HeroDataManager heroDataManager) async {
   print('\nAdding a new hero...');
 
   stdout.write('Enter hero name: ');
@@ -40,15 +39,21 @@ void addHeroInteractive(HeroDataManager heroDataManager) {
   stdout.write('Enter combat (0-100): ');
   final combat = stdin.readLineSync() ?? '0';
 
-  // Biography
+   // Biography
   stdout.write('Enter full name (optional): ');
   final fullName = stdin.readLineSync() ?? '';
 
   stdout.write('Enter alter egos (optional): ');
   final alterEgos = stdin.readLineSync() ?? '';
 
-  stdout.write('Enter alignment (good/evil, optional): ');
-  final alignment = stdin.readLineSync() ?? '';
+  stdout.write('Enter aliases (comma-separated, optional): ');
+  final aliasesInput = stdin.readLineSync() ?? '';
+  final aliases = aliasesInput.isEmpty 
+      ? <String>[] 
+      : aliasesInput.split(',').map((alias) => alias.trim()).toList();
+
+  stdout.write('Enter place of birth (optional): ');
+  final placeOfBirth = stdin.readLineSync() ?? '';
 
   stdout.write('Enter first appearance (optional): ');
   final firstAppearance = stdin.readLineSync() ?? '';
@@ -56,12 +61,27 @@ void addHeroInteractive(HeroDataManager heroDataManager) {
   stdout.write('Enter publisher (optional): ');
   final publisher = stdin.readLineSync() ?? '';
 
-  // Appearance
+  stdout.write('Enter alignment (good/evil, optional): ');
+  final alignment = stdin.readLineSync() ?? '';
+
+  //Starts Appearance
   stdout.write('Enter gender (optional): ');
   final gender = stdin.readLineSync() ?? '';
 
   stdout.write('Enter race (optional): ');
   final race = stdin.readLineSync() ?? '';
+
+  stdout.write('Enter height (comma-separated, e.g., "6\'0", "183 cm", optional): ');
+  final heightInput = stdin.readLineSync() ?? '';
+  final height = heightInput.isEmpty 
+      ? <String>[] 
+      : heightInput.split(',').map((h) => h.trim()).toList();
+
+  stdout.write('Enter weight (comma-separated, e.g., "180 lb", "82 kg", optional): ');
+  final weightInput = stdin.readLineSync() ?? '';
+  final weight = weightInput.isEmpty 
+      ? <String>[] 
+      : weightInput.split(',').map((w) => w.trim()).toList();
 
   stdout.write('Enter eye color (optional): ');
   final eyeColor = stdin.readLineSync() ?? '';
@@ -101,8 +121,8 @@ void addHeroInteractive(HeroDataManager heroDataManager) {
     biography: Biography(
       fullName: fullName,
       alterEgos: alterEgos,
-      aliases: [],
-      placeOfBirth: '',
+      aliases: aliases,
+      placeOfBirth: placeOfBirth,
       firstAppearance: firstAppearance,
       publisher: publisher,
       alignment: alignment,
@@ -110,8 +130,8 @@ void addHeroInteractive(HeroDataManager heroDataManager) {
     appearance: Appearance(
       gender: gender,
       race: race,
-      height: [],
-      weight: [],
+      height: height,
+      weight: weight,
       eyeColor: eyeColor,
       hairColor: hairColor,
     ),
@@ -128,13 +148,12 @@ void addHeroInteractive(HeroDataManager heroDataManager) {
     ),
   );
 
-  heroDataManager.addHero(hero);
-  print('\nHero "${hero.name}" added successfully!\n');
-}
-
-// Keep the original calculate function for backwards compatibility
-int calculate() {
-  return 6 * 7;
+  final success = await heroDataManager.addHero(hero);
+  if (success) {
+    print('\nHero "${hero.name}" added successfully!\n');
+  } else {
+    print('\nError adding hero "${hero.name}".\n');
+  }
 }
 
 void printMenu() {
@@ -147,8 +166,7 @@ void printMenu() {
   print('─────────────────────────────────────');
 }
 
-// Search heroes by name (interactive)
-void searchHeroesInteractive(HeroDataManager heroDataManager) {
+Future<void> searchHeroesInteractive(HeroDataManager heroDataManager) async {
   if (heroDataManager.heroes.isEmpty) {
     print('\nNo heroes to search.\n');
     return;
@@ -162,7 +180,7 @@ void searchHeroesInteractive(HeroDataManager heroDataManager) {
     return;
   }
 
-  final matches = heroDataManager.searchHeroesByName(query);
+  final matches = await heroDataManager.searchHeroesByName(query);
 
   if (matches.isEmpty) {
     print('\nNo heroes found matching "$query".\n');
@@ -176,7 +194,6 @@ void searchHeroesInteractive(HeroDataManager heroDataManager) {
   }
 }
 
-// Show all heroes
 void showHeroes(List<HeroModel> heroesToDisplay) {
   if (heroesToDisplay.isEmpty) {
     print('\nNo heroes in the database yet.\n');
@@ -193,7 +210,6 @@ void showHeroes(List<HeroModel> heroesToDisplay) {
   print('═══════════════════════════════════════\n');
 }
 
-// Helper: Print a single hero
 void _printHero(HeroModel hero) {
   print('  ID: ${hero.id} | Name: ${hero.name}');
   
@@ -208,13 +224,17 @@ void _printHero(HeroModel hero) {
   print('  BIOGRAPHY:');
   print('    Full Name: ${hero.biography.fullName}');
   print('    Alter Egos: ${hero.biography.alterEgos}');
-  print('    Alignment: ${hero.biography.alignment}');
+  print('    Aliases: ${hero.biography.aliases.join(', ')}');
+  print('    Place of Birth: ${hero.biography.placeOfBirth}');
   print('    First Appearance: ${hero.biography.firstAppearance}');
   print('    Publisher: ${hero.biography.publisher}');
+  print('    Alignment: ${hero.biography.alignment}');
   
   print('  APPEARANCE:');
   print('    Gender: ${hero.appearance.gender}');
   print('    Race: ${hero.appearance.race}');
+  print('    Height: ${hero.appearance.height.join(', ')}');
+  print('    Weight: ${hero.appearance.weight.join(', ')}');
   print('    Eye Color: ${hero.appearance.eyeColor}');
   print('    Hair Color: ${hero.appearance.hairColor}');
   

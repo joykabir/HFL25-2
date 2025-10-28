@@ -2,10 +2,11 @@ import 'dart:io';
 
 import 'package:args/args.dart';
 import 'package:v03/services/hero_data_manager.dart';
-import 'package:v03/v03.dart' as v03;
+import 'hero_interactive.dart' as hero_interactive;
 
+const String version = '0.0.3';
 
-void main(List<String> arguments) {
+Future<void> main(List<String> arguments) async {
   final argParser = buildParser();
 
   try {
@@ -24,10 +25,10 @@ void main(List<String> arguments) {
 
     // Initialize the singleton manager
     final heroDataManager = HeroDataManager();
-    heroDataManager.loadHeroes();
+    await heroDataManager.loadHeroes();
 
     if (verbose) {
-      print('[INFO] Loaded ${heroDataManager.heroes.length} heroes from database.\n');
+      print('[INFO] Loaded ${heroDataManager.heroes.length} heroes from local heroes.json file.\n');
     }
 
 
@@ -38,29 +39,34 @@ void main(List<String> arguments) {
     bool running = true;
 
     while (running) {
-      v03.printMenu();
+      hero_interactive.printMenu();
       stdout.write('Choose an option (1-4): ');
       final input = stdin.readLineSync();
       final choice = int.tryParse(input ?? '');
 
       switch (choice) {
         case 1:
-          v03.addHeroInteractive(heroDataManager);
-          heroDataManager.saveHeroes();
+          await hero_interactive.addHeroInteractive(heroDataManager);
+          final saveSuccess = await heroDataManager.saveHeroes();
+
           if (verbose) {
-            print('[INFO] Hero saved. Total heroes: ${heroDataManager.heroes.length}');
+            if (saveSuccess) {
+              print('[INFO] Hero saved successfully. Total heroes: ${heroDataManager.heroes.length}');
+            } else {
+              print('[ERROR] Failed to save hero.');
+            }
           }
           break;
         case 2:
-          v03.showHeroes(heroDataManager.getHeroesSortedByStrength());
+          hero_interactive.showHeroes(heroDataManager.getHeroesSortedByStrength());
           break;
         case 3:
-          v03.searchHeroesInteractive(heroDataManager);
+          await hero_interactive.searchHeroesInteractive(heroDataManager);
           break;
         case 4:
           print('\nExiting the program!\n');
           if (verbose) {
-            print('[INFO] Program terminated gracefully.');
+            print('[INFO] Gracefully closed the program.');
           }
           running = false;
           break;
@@ -78,9 +84,6 @@ void main(List<String> arguments) {
     exit(1);
   }
 }
-
-const String version = '0.0.3';
-
 
 
 ArgParser buildParser() {

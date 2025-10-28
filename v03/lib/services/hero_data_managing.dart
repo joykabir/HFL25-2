@@ -3,9 +3,9 @@ import '../models/heromodel.dart';
 abstract class HeroDataManaging {
   List<HeroModel> get heroes;
   
-  void addHero(HeroModel hero);
-  void deleteHero(String id);
-  void loadHeroes();
-  void saveHeroes();
-  List<HeroModel> searchHeroesByName(String name);
+  Future<bool> addHero(HeroModel hero);
+  Future<bool> deleteHero(String id);
+  Future<void> loadHeroes();
+  Future<bool> saveHeroes();
+  Future<List<HeroModel>> searchHeroesByName(String name);
 }

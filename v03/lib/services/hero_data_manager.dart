@@ -22,13 +22,30 @@ class HeroDataManager implements HeroDataManaging {
   List<HeroModel> get heroes => _heroes;
 
   @override
-  void addHero(HeroModel hero) {
-    _heroes.add(hero);
+  Future<bool> addHero(HeroModel hero) async {
+    try {
+      _heroes.add(hero);
+      return await saveHeroes();
+    } catch (e) {
+      print('Error adding hero: $e');
+      return false;
+    }
   }
 
   @override
-  void deleteHero(String id) {
-    _heroes.removeWhere((hero) => hero.id == id);
+  Future<bool> deleteHero(String id) async {
+    try {
+      final initialLength = _heroes.length;
+      _heroes.removeWhere((hero) => hero.id == id);
+      
+      if (_heroes.length < initialLength) {
+        return await saveHeroes();
+      }
+      return false;
+    } catch (e) {
+      print('Error deleting hero: $e');
+      return false;
+    }
   }
 
   List<HeroModel> getHeroesSortedByStrength() {
@@ -42,16 +59,15 @@ class HeroDataManager implements HeroDataManaging {
   }
 
   @override
-  void loadHeroes() {
+  Future<void> loadHeroes() async {
     final file = File(_filePath);
-
     if (!file.existsSync()) {
       _heroes = [];
       return;
     }
 
     try {
-      final content = file.readAsStringSync();
+      final content = await file.readAsString();
       if (content.trim().isEmpty) {
         _heroes = [];
         return;
@@ -68,25 +84,27 @@ class HeroDataManager implements HeroDataManaging {
   }
 
   @override
-  void saveHeroes() {
+  Future<bool> saveHeroes() async{
     try {
       final file = File(_filePath);
       final jsonData = jsonEncode(_heroes.map((hero) => hero.toJson()).toList());
-      file.writeAsStringSync(jsonData);
+      await file.writeAsString(jsonData);
+      return true;
     } catch (e) {
       print('Error saving heroes: $e');
+      return false;
     }
   }
 
   @override
-  List<HeroModel> searchHeroesByName(String query) {
+  Future<List<HeroModel>> searchHeroesByName(String name) async {
     if (_heroes.isEmpty) {
       return [];
     }
 
-    final lowerQuery = query.toLowerCase().trim();
+    final nameLowercase = name.toLowerCase().trim();
     return _heroes
-        .where((hero) => hero.name.toLowerCase().contains(lowerQuery))
+        .where((hero) => hero.name.toLowerCase().contains(nameLowercase))
         .toList();
   }
 }
