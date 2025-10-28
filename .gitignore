@@ -38,3 +38,4 @@ coverage/
 
 # Mac
 .DS_Store
+.env

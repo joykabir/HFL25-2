@@ -52,22 +52,40 @@ Features:
 - Dart SDK (version 3.0.0 or higher)
 - Git for cloning the repository
 
-## Installation & Setup
+## Setup Superhero API key
+
+1. Copy `.env.example` to `.env`:
+   ```bash
+   cp .env.example .env
+   ```
+
+2. Edit `.env` and add your actual API key:
+   ```env
+   SUPERHERO_API_KEY=your_actual_api_key_here
+   ```
+
+3. Install dependencies:
+   ```bash
+   cd v03
+   dart pub get
+   ```
+
+## Run test
 
 ```bash
 # Clone the repository
 git clone git@github.com:joykabir/HFL25-2.git
 cd HFL25-2
 
-# Navigate to specific project
-cd v01
+# Navigate to v04
+cd v04
 
-# Install dependencies (if any)
+# Install dependencies
 dart pub get
 
-# Run the program
-dart run bin/calculator.dart
+# Run main app
+dart run bin/main.dart
 
 # Run tests
-dart test
+dart test test/test_all.dart --reporter=expanded
 
