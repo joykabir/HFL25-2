@@ -17,10 +17,11 @@ jobs:
         id: extract_folder
         run: |
           echo "::group::Extracting version folder from branch name"
-          folder_name=$(echo "${{ github.head_ref }}" | grep -o 'v[0-9][0-9]' | head -n 1)
+          folder_name=$(echo "${{ github.head_ref }}" | grep -o 'v[0-9][0-9]_[a-zA-Z_]*\|v[0-9][0-9]' | head -n 1)
           
           if [ -z "$folder_name" ]; then
-            echo "❌ No version folder found in branch name (expected pattern: v[0-9][0-9])"
+            echo "❌ No version folder found in branch name"
+            echo "Expected patterns: v[0-9][0-9] (e.g., v01, v23) or v[0-9][0-9]_* (e.g., v04_final, v05_beta)"
             echo "Branch: ${{ github.head_ref }}"
           else
             echo "✅ Found version folder: $folder_name"
@@ -57,4 +58,6 @@ jobs:
         if: steps.extract_folder.outputs.folder_name == ''
         run: |
           echo "::warning::Tests skipped - no version folder found in branch name"
-          echo "💡 Branch names should contain a version pattern like 'v01', 'v23', etc."
+          echo "💡 Branch names should contain a version pattern like:"
+          echo "  - v01, v02, v23 (basic version)"
+          echo "  - v04_final, v05_beta, v10_release (version with suffix)"
