@@ -50,11 +50,11 @@ Features:
 ## Prerequisites
 
 - Dart SDK (version 3.0.0 or higher)
-- Git for cloning the repository
+- Superhero API key (Personal)
 
 ## Setup Superhero API key
 
-1. Copy `.env.example` to `.env`:
+1. Copy `.env.example` to `.env` in the root of the project. The file is already added in gitignore:
    ```bash
    cp .env.example .env
    ```
@@ -66,19 +66,15 @@ Features:
 
 3. Install dependencies:
    ```bash
-   cd v03
+   cd v04
    dart pub get
    ```
 
 ## Run test
 
 ```bash
-# Clone the repository
 git clone git@github.com:joykabir/HFL25-2.git
-cd HFL25-2
-
-# Navigate to v04
-cd v04
+cd HFL25-2/v04
 
 # Install dependencies
 dart pub get
