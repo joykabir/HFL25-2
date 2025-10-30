@@ -1,16 +1,24 @@
 import 'dart:convert';
+
 import 'package:http/http.dart' as http;
-import 'package:uuid/uuid.dart';
+import 'package:v04/config/app_config.dart';
 
-import '../config/app_config.dart';
-
-import '../models/heromodel.dart';
-import '../models/powerstats.dart';
-import '../models/biography.dart';
 import '../models/appearance.dart';
-import '../models/work.dart';
+import '../models/biography.dart';
 import '../models/connections.dart';
 import '../models/heroimage.dart';
+import '../models/heromodel.dart';
+import '../models/powerstats.dart';
+import '../models/work.dart';
+
+// My custom exception for HTTP errors
+class HttpException implements Exception {
+  final String message;
+  HttpException(this.message);
+  
+  @override
+  String toString() => 'HttpException: $message';
+}
 
 class HttpHandler {
   static final HttpHandler _instance = HttpHandler._internal();
@@ -27,9 +35,46 @@ class HttpHandler {
     _apiKey = config.apiKey;
   }
 
-  /// Builds the complete API URL for a specific endpoint.
-  String _buildApiUrl(String endpoint) {
-    return '$_baseUrl/$_apiKey/$endpoint';
+
+  /// Fetches detailed hero information by external API ID.
+  Future<HeroModel?> getHeroDetailsById(String externalId) async {
+    if (externalId.trim().isEmpty) {
+      throw ArgumentError('Hero ID cannot be empty');
+    }
+
+    final url = _buildApiUrl(externalId.trim());
+
+    try {
+      final response = await http.get(
+        Uri.parse(url),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> data = jsonDecode(response.body);
+
+        if (data['response'] == 'success') {
+          return _convertApiResponseToHeroModel(data);
+        } else {
+          print('API Error: ${data['error'] ?? 'Unknown error'}');
+          return null;
+        }
+      } else if (response.statusCode == 404) {
+        print('Hero not found with ID: $externalId');
+        return null;
+      } else {
+        throw HttpException('HTTP ${response.statusCode}: ${response.reasonPhrase}');
+      }
+    } on FormatException catch (e) {
+      throw HttpException('Invalid JSON response: $e');
+    } on http.ClientException catch (e) {
+      throw HttpException('Network error: $e');
+    } catch (e) {
+      throw HttpException('Unexpected error: $e');
+    }
   }
 
   /// Fetches superhero data from the API based on the provided name.
@@ -87,45 +132,40 @@ class HttpHandler {
     }
   }
 
-  /// Fetches detailed hero information by external API ID.
-  Future<HeroModel?> getHeroDetailsById(String externalId) async {
-    if (externalId.trim().isEmpty) {
-      throw ArgumentError('Hero ID cannot be empty');
+  /// Tests the API connection just for verification purposes
+Future<bool> testConnection({bool verbose = false}) async {
+  try {
+    if (verbose) {
+      print('Testing API connection...');
+      print('URL: $_baseUrl');
+      print('API Key: ${_apiKey.substring(0, 5)}...${_apiKey.substring(_apiKey.length - 5)}');
     }
 
-    final url = _buildApiUrl(externalId.trim());
-
-    try {
-      final response = await http.get(
-        Uri.parse(url),
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-        },
-      );
-
-      if (response.statusCode == 200) {
-        final Map<String, dynamic> data = jsonDecode(response.body);
-
-        if (data['response'] == 'success') {
-          return _convertApiResponseToHeroModel(data);
-        } else {
-          print('API Error: ${data['error'] ?? 'Unknown error'}');
-          return null;
-        }
-      } else if (response.statusCode == 404) {
-        print('Hero not found with ID: $externalId');
-        return null;
-      } else {
-        throw HttpException('HTTP ${response.statusCode}: ${response.reasonPhrase}');
+    final heroes = await getHeroesByName('batman');
+    
+    if (heroes.isNotEmpty) {
+      if (verbose) {
+        print('[TEST] ✅ Connection successful!');
+        print('[TEST] Retrieved ${heroes.length} hero(es) from API');
       }
-    } on FormatException catch (e) {
-      throw HttpException('Invalid JSON response: $e');
-    } on http.ClientException catch (e) {
-      throw HttpException('Network error: $e');
-    } catch (e) {
-      throw HttpException('Unexpected error: $e');
+      return true;
+    } else {
+      if (verbose) {
+        print('[TEST] ⚠️  Connection OK but no heroes returned');
+      }
+      return false;
     }
+  } catch (e) {
+    if (verbose) {
+      print('[TEST] ❌ Connection failed: $e');
+    }
+    return false;
+  }
+}
+
+  /// Builds the complete API URL for a specific endpoint.
+  String _buildApiUrl(String endpoint) {
+    return '$_baseUrl/$_apiKey/$endpoint';
   }
 
   /// Converts API response JSON to HeroModel with proper field mapping.
@@ -172,14 +212,6 @@ class HttpHandler {
     );
   }
 
-  /// Safely converts dynamic value to string, handling null and 'null' string.
-  String _safeStringValue(dynamic value) {
-    if (value == null || value == 'null' || value == '-') {
-      return '0';
-    }
-    return value.toString();
-  }
-
   /// Safely converts dynamic value to List<String>, handling null and various formats.
   List<String> _safeStringList(dynamic value) {
     if (value == null) return [];
@@ -193,24 +225,11 @@ class HttpHandler {
     return [value.toString()];
   }
 
-  /// Tests the API connection.
-  Future<bool> testConnection() async {
-    try {
-      // Test with a simple search for a common hero
-      final heroes = await getHeroesByName('batman');
-      return heroes.isNotEmpty;
-    } catch (e) {
-      print('Connection test failed: $e');
-      return false;
+/// Safely converts dynamic value to string, handling null and 'null' string.
+  String _safeStringValue(dynamic value) {
+    if (value == null || value == 'null' || value == '-') {
+      return '0';
     }
+    return value.toString();
   }
-}
-
-// My custom exception for HTTP errors
-class HttpException implements Exception {
-  final String message;
-  HttpException(this.message);
-  
-  @override
-  String toString() => 'HttpException: $message';
 }

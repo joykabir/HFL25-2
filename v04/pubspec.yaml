@@ -1,6 +1,6 @@
-name: v03
-description: HeroDex 3000 Modular Edition
-version: 1.0.0
+name: v04
+description: HeroDex 3000 Final Version
+version: 0.1.0
 publish_to: none
 
 environment:

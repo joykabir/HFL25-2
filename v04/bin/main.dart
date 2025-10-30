@@ -1,7 +1,8 @@
 import 'dart:io';
 
 import 'package:args/args.dart';
-import 'package:v04/lib/services/hero_data_manager.dart';
+import 'package:v04/network/http_handler.dart';
+import 'package:v04/services/hero_data_manager.dart';
 
 import 'hero_interactive.dart' as hero_interactive;
 
@@ -26,6 +27,15 @@ Future<void> main(List<String> arguments) async {
     final heroDataManager = HeroDataManager();
     await heroDataManager.loadHeroes();
 
+    // Test API connection (optional - remove after testing)
+    if (verbose) {
+      print('[INFO] Testing API connection...');
+      final isConnected = await HttpHandler().testConnection(verbose: true);
+      if (!isConnected) {
+        print('[WARN] API connection test failed. External search may not work.\n');
+      }
+    }
+    
     if (verbose) {
       print('[INFO] Loaded ${heroDataManager.heroes.length} heroes from local heroes.json file.\n');
     }
@@ -40,7 +50,7 @@ Future<void> main(List<String> arguments) async {
 
     while (running) {
       hero_interactive.printMenu();
-      stdout.write('Choose an option (1-4): ');
+      stdout.write('Choose an option (1-5): ');
       final input = stdin.readLineSync();
       final choice = int.tryParse(input ?? '');
 
@@ -64,6 +74,9 @@ Future<void> main(List<String> arguments) async {
           await hero_interactive.searchHeroesInteractive(heroDataManager);
           break;
         case 4:
+          await hero_interactive.searchExternalHeroesInteractive(heroDataManager, verbose);
+          break;
+        case 5:
           print('\nExiting the program!\n');
           if (verbose) {
             print('[INFO] Gracefully closed the program.');
@@ -128,6 +141,7 @@ When running the program:
   1. Add Hero - Create a new hero with details
   2. Show Heroes - Display all heroes sorted by strength
   3. Search Heroes - Find heroes by unique name
-  4. Exit - Close the program
+  4. Search Heroes External - Find heroes using external API
+  5. Exit - Close the program
 ''');
 }

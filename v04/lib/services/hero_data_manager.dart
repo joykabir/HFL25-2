@@ -1,8 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:v04/network/http_handler.dart';
+
 import '../models/heromodel.dart';
-import '../network/http_handler.dart';
 import 'hero_data_managing.dart';
 
 class HeroDataManager implements HeroDataManaging {
@@ -11,6 +12,7 @@ class HeroDataManager implements HeroDataManaging {
   
   final String _filePath = 'heroes.json';
   late List<HeroModel> _heroes;
+  late final HttpHandler _httpHandler;
 
   factory HeroDataManager() {
     return _instance;
@@ -18,6 +20,7 @@ class HeroDataManager implements HeroDataManaging {
 
   HeroDataManager._internal() {
     _heroes = [];
+    _httpHandler = HttpHandler();
   }
 
   @override
@@ -26,6 +29,14 @@ class HeroDataManager implements HeroDataManaging {
   @override
   Future<bool> addHero(HeroModel hero) async {
     try {
+      if (hero.externalId != null && hero.externalId!.isNotEmpty) {
+        final existingHero = _heroes.where((h) => h.externalId == hero.externalId).firstOrNull;
+        if (existingHero != null) {
+          print('❌ Hero with external ID ${hero.externalId} already exists: ${existingHero.name}');
+          return false;
+        }
+      }
+
       _heroes.add(hero);
       return await saveHeroes();
     } catch (e) {
@@ -33,7 +44,6 @@ class HeroDataManager implements HeroDataManaging {
       return false;
     }
   }
-
   @override
   Future<bool> deleteHero(String id) async {
     try {
@@ -58,6 +68,11 @@ class HeroDataManager implements HeroDataManaging {
       return bStrength.compareTo(aStrength);
     });
     return sorted;
+  }
+
+  bool isExternalHeroAlreadySaved(String externalId) {
+    if (externalId.isEmpty) return false;
+    return _heroes.any((hero) => hero.externalId == externalId);
   }
 
   @override
@@ -97,21 +112,27 @@ class HeroDataManager implements HeroDataManaging {
       return false;
     }
   }
-
-  @override
-  Future<List<HeroModel>> searchExternalHeroes(String name) {
-    throw UnimplementedError();
-  }
   
   @override
-  Future<List<HeroModel>> searchHeroesByName(String name) async {
+  Future<List<HeroModel>> searchHeroesByName(String heroName) async {
     if (_heroes.isEmpty) {
       return [];
     }
 
-    final nameLowercase = name.toLowerCase().trim();
+    final nameLowercase = heroName.toLowerCase().trim();
     return _heroes
         .where((hero) => hero.name.toLowerCase().contains(nameLowercase))
         .toList();
+  }
+
+  @override
+  Future<List<HeroModel>> searchHeroesExternalByName(String name) async{
+    try {
+
+      return await _httpHandler.getHeroesByName(name);
+    } catch (e) {
+      print('Error searching heroes externally: $e');
+      return Future.value([]);
+    }
   }
 }
