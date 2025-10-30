@@ -1,4 +1,4 @@
-name: Run Tests on MR to Develop
+name: Run unit tests
 
 on:
   pull_request:
