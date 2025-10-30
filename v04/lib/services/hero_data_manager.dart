@@ -1,12 +1,12 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:v04/api_exception.dart';
+import 'package:v04/exceptions/api_exception.dart';
 import 'package:v04/config/constants.dart';
-import 'package:v04/data_persistence_exception.dart';
-import 'package:v04/network/http_handler.dart';
+import 'package:v04/exceptions/data_persistence_exception.dart';
+import 'package:v04/handlers/http_handler.dart';
 import 'package:v04/utils/error_handler.dart';
-import 'package:v04/validation_exception.dart';
+import 'package:v04/exceptions/validation_exception.dart';
 
 import '../models/heromodel.dart';
 import 'hero_data_managing.dart';

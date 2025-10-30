@@ -1,12 +1,12 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
-import 'package:v04/api_exception.dart';
+import 'package:v04/exceptions/api_exception.dart';
 import 'package:v04/config/app_config.dart';
 import 'package:v04/config/constants.dart';
-import 'package:v04/custom_http_exception.dart';
+import 'package:v04/exceptions/custom_http_exception.dart';
 import 'package:v04/mappers/hero_mapper.dart';
-import 'package:v04/validation_exception.dart';
+import 'package:v04/exceptions/validation_exception.dart';
 
 import '../models/heromodel.dart';
 
