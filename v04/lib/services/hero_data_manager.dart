@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import '../models/heromodel.dart';
+import '../network/http_handler.dart';
 import 'hero_data_managing.dart';
 
 class HeroDataManager implements HeroDataManaging {
@@ -98,6 +99,11 @@ class HeroDataManager implements HeroDataManaging {
   }
 
   @override
+  Future<List<HeroModel>> searchExternalHeroes(String name) {
+    throw UnimplementedError();
+  }
+  
+  @override
   Future<List<HeroModel>> searchHeroesByName(String name) async {
     if (_heroes.isEmpty) {
       return [];
@@ -107,11 +113,5 @@ class HeroDataManager implements HeroDataManaging {
     return _heroes
         .where((hero) => hero.name.toLowerCase().contains(nameLowercase))
         .toList();
-  }
-  
-  @override
-  Future<List<HeroModel>> searchExternalHeroes(String name) {
-    // TODO: implement searchExternalHeroes
-    throw UnimplementedError();
   }
 }

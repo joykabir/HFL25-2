@@ -1,7 +1,8 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:uuid/uuid.dart';
-import 'package:v04_final/config/app_config.dart' as config;
+
+import '../config/app_config.dart';
 
 import '../models/heromodel.dart';
 import '../models/powerstats.dart';
@@ -10,7 +11,6 @@ import '../models/appearance.dart';
 import '../models/work.dart';
 import '../models/connections.dart';
 import '../models/heroimage.dart';
-import '../../config/app_config.dart'
 
 class HttpHandler {
   static final HttpHandler _instance = HttpHandler._internal();

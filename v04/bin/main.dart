@@ -1,10 +1,9 @@
 import 'dart:io';
 
 import 'package:args/args.dart';
-import 'package:v04_final/lib/services/hero_data_manager.dart';;
-import 'hero_interactive.dart' as hero_interactive;
+import 'package:v04/lib/services/hero_data_manager.dart';
 
-const String version = '0.0.3';
+import 'hero_interactive.dart' as hero_interactive;
 
 Future<void> main(List<String> arguments) async {
   final argParser = buildParser();
@@ -85,6 +84,8 @@ Future<void> main(List<String> arguments) async {
     exit(1);
   }
 }
+
+const String version = '0.0.3';
 
 
 ArgParser buildParser() {

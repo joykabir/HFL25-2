@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:v04_final/lib/models/appearance.dart';
+import 'package:v04/lib/models/appearance.dart';
 import 'package:v03/models/biography.dart';
 import 'package:v03/models/connections.dart';
 import 'package:v03/models/heroimage.dart';
