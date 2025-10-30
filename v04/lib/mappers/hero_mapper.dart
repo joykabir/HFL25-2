@@ -15,7 +15,6 @@ class HeroMapper {
     };
   }
 
-  /// Map appearance from API format to Appearance.fromJson() format
   static Map<String, dynamic> _mapAppearance(Map<String, dynamic>? json) {
     if (json == null) {
       return {
@@ -38,7 +37,6 @@ class HeroMapper {
     };
   }
 
-  /// Map biography from API format to Biography.fromJson() format
   static Map<String, dynamic> _mapBiography(Map<String, dynamic>? json) {
     if (json == null) {
       return {
@@ -63,7 +61,7 @@ class HeroMapper {
     };
   }
 
-  /// Map connections from API format to Connections.fromJson() format
+
   static Map<String, dynamic> _mapConnections(Map<String, dynamic>? json) {
     if (json == null) {
       return {
@@ -78,7 +76,7 @@ class HeroMapper {
     };
   }
 
-  /// Map image from API format to HeroImage.fromJson() format
+
   static Map<String, dynamic> _mapImage(Map<String, dynamic>? json) {
     if (json == null) {
       return {'url': ''};
@@ -89,7 +87,7 @@ class HeroMapper {
     };
   }
 
-  /// Map powerstats from API format to Powerstats.fromJson() format
+
   static Map<String, dynamic> _mapPowerstats(Map<String, dynamic>? json) {
     if (json == null) {
       return {
@@ -112,7 +110,6 @@ class HeroMapper {
     };
   }
 
-  /// Map work from API format to Work.fromJson() format
   static Map<String, dynamic> _mapWork(Map<String, dynamic>? json) {
     if (json == null) {
       return {
@@ -127,7 +124,6 @@ class HeroMapper {
     };
   }
 
-  /// Safely convert dynamic value to List<String>
   static List<String> _safeStringList(dynamic value) {
     if (value == null) return [];
     if (value is List) {

@@ -177,7 +177,7 @@ class TestDataFactory {
     );
   }
 
-  static HeroModel createMarvelHero(String name) {
+  static HeroModel createMarvelHero({required String name}) {
     final hero = createTestHero(name: name);
     return HeroModel(
       name: hero.name,
@@ -198,7 +198,7 @@ class TestDataFactory {
     );
   }
 
-  static HeroModel createDCHero(String name) {
+  static HeroModel createDCHero({required String name}) {
     final hero = createTestHero(name: name);
     return HeroModel(
       name: hero.name,
@@ -216,6 +216,53 @@ class TestDataFactory {
       work: hero.work,
       connections: hero.connections,
       image: hero.image,
+    );
+  }
+  
+  static HeroModel createExternalHero({
+    required String name,
+    required String externalId,
+    required String strength,
+  }) {
+    return HeroModel(
+      externalId: externalId,
+      name: name,
+      powerstats: Powerstats(
+        intelligence: '75',
+        strength: strength,
+        speed: '80',
+        durability: '85',
+        power: '90',
+        combat: '70',
+      ),
+      biography: Biography(
+        fullName: '$name (External)',
+        alterEgos: 'No alter egos found.',
+        aliases: ['Test Alias'],
+        placeOfBirth: 'Test City',
+        firstAppearance: 'Test Comic #1',
+        publisher: 'Test Comics',
+        alignment: 'good',
+      ),
+      appearance: Appearance(
+        gender: 'Male',
+        race: 'Human',
+        height: ['6\'0"', '183 cm'],
+        weight: ['180 lb', '82 kg'],
+        eyeColor: 'Blue',
+        hairColor: 'Black',
+      ),
+      work: Work(
+        occupation: 'Superhero',
+        base: 'Test Base',
+      ),
+      connections: Connections(
+        groupAffiliation: 'Test Team',
+        relatives: 'Test Family',
+      ),
+      image: HeroImage(
+        url: 'https://example.com/hero.jpg',
+      ),
     );
   }
 }

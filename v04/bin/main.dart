@@ -1,10 +1,11 @@
 import 'dart:io';
 
 import 'package:args/args.dart';
-import 'package:v04/network/http_handler.dart';
+import 'package:v04/helpers/delete_helper.dart';
+import 'package:v04/helpers/hero_factory.dart';
+import 'package:v04/helpers/print_helper.dart';
+import 'package:v04/helpers/search_helper.dart';
 import 'package:v04/services/hero_data_manager.dart';
-
-import 'hero_interactive.dart' as hero_interactive;
 
 Future<void> main(List<String> arguments) async {
   final argParser = buildParser();
@@ -27,64 +28,53 @@ Future<void> main(List<String> arguments) async {
     final heroDataManager = HeroDataManager();
     await heroDataManager.loadHeroes();
 
-    // Test API connection when verbose is enabled
-    if (verbose) {
-      print('[INFO] Testing API connection...');
-      final isConnected = await HttpHandler().testConnection(verbose: true);
-      if (!isConnected) {
-        print('API connection test failed. \n');
-      }
-    }
-    
     if (verbose) {
       print('[INFO] Loaded ${heroDataManager.heroes.length} heroes from local heroes.json file.\n');
     }
-
 
     print('═══════════════════════════════════════');
     print('   Welcome to HeroDex 3000!');
     print('═══════════════════════════════════════\n');
 
-
     bool running = true;
 
     while (running) {
-      hero_interactive.printMenu();
-      stdout.write('Choose an option (1-5): ');
+      PrintHelper.printMenu();
+      stdout.write('Choose an option (1-6): ');
       final input = stdin.readLineSync();
       final choice = int.tryParse(input ?? '');
 
       switch (choice) {
         case 1:
-          await hero_interactive.addHeroInteractive(heroDataManager);
-          final saveSuccess = await heroDataManager.saveHeroes();
-
-          if (verbose) {
-            if (saveSuccess) {
-              print('[INFO] Hero saved successfully. Total heroes: ${heroDataManager.heroes.length}');
-            } else {
-              print('[ERROR] Failed to save hero.');
-            }
-          }
+          await _addHeroInteractive(heroDataManager, verbose);
           break;
+          
         case 2:
-          hero_interactive.showHeroes(heroDataManager.getHeroesSortedByStrength());
+          PrintHelper.showHeroes(heroDataManager.getHeroesSortedByStrength());
           break;
+          
         case 3:
-          await hero_interactive.searchHeroesInteractive(heroDataManager);
+          await SearchHelper.searchLocalHeroes(heroDataManager);
           break;
+        
         case 4:
-          await hero_interactive.searchExternalHeroesInteractive(heroDataManager, verbose);
+          await SearchHelper.searchExternalHeroes(heroDataManager, verbose);
           break;
+          
         case 5:
+          await DeleteHelper.deleteHeroInteractive(heroDataManager, verbose);
+          break;
+          
+        case 6:
           print('\nExiting the program!\n');
           if (verbose) {
-            print('Gracefully closed the program.');
+            print('[INFO] Gracefully closed the program.');
           }
           running = false;
           break;
+          
         default:
-          print('\nInvalid option. Please choose 1-4.\n');
+          print('\nInvalid option. Please choose 1-6.\n');
       }
     }
   } on FormatException catch (e) {
@@ -98,8 +88,7 @@ Future<void> main(List<String> arguments) async {
   }
 }
 
-const String version = '0.0.3';
-
+const String version = '0.0.5';
 
 ArgParser buildParser() {
   return ArgParser()
@@ -118,14 +107,13 @@ ArgParser buildParser() {
     ..addFlag(
       'verbose',
       negatable: false,
-      help: 'Show verbose output.',
+      help: 'Show verbose output including debug information.',
     );
 }
 
-
 void printUsage(ArgParser argParser) {
   print('''
-HeroDex 3000 - Superhero Tracking 
+HeroDex 3000 - Superhero Tracking Application
 
 Usage:
   dart run bin/main.dart [options]
@@ -137,11 +125,54 @@ Examples:
   dart run bin/main.dart --version
   dart run bin/main.dart --verbose
 
-When running the program:
-  1. Add Hero - Create a new hero with details locally
-  2. Show Heroes - Display all local heroes sorted by strength
-  3. Search Heroes - Find heroes by name locally
-  4. Search Heroes External - Find heroes using external API
-  5. Exit - Close the program
+Features:
+  • Add heroes manually with detailed information
+  • Search and import heroes from external superhero API
+  • View all heroes sorted by strength
+  • Search local hero collection by name
+  • Delete heroes from collection
+  • Automatic duplicate prevention for external heroes
+
+Menu Options:
+  1. Add Hero Locally - Create a new hero manually
+  2. Show Local Heroes - Display all heroes sorted by strength
+  3. Search Local Heroes - Find heroes by name in your collection
+  4. Search External Heroes - Find and import heroes from API
+  5. Delete Local Hero - Remove a hero from your collection
+  6. Exit - Close the application
+
+Data Storage:
+  • Heroes are stored locally in heroes.json
+  • External API heroes preserve their original IDs
+  • Each hero gets a unique internal UUID
 ''');
+}
+
+Future<void> _addHeroInteractive(HeroDataManager heroDataManager, bool verbose) async {
+  try {
+    final hero = await HeroFactory.createHeroInteractively();
+    final success = await heroDataManager.addHero(hero);
+    
+    if (success) {
+      PrintHelper.printSuccess('Hero "${hero.name}" added successfully!');
+      
+      if (verbose) {
+        print('[INFO] Hero saved successfully. Total heroes: ${heroDataManager.heroes.length}');
+        print('[DEBUG] Hero ID: ${hero.id}');
+        print('[DEBUG] Hero strength: ${hero.powerstats.strength}');
+      }
+    } else {
+      PrintHelper.printError('Error adding hero "${hero.name}".');
+      
+      if (verbose) {
+        print('[ERROR] Failed to save hero to collection.');
+      }
+    }
+  } catch (e) {
+    PrintHelper.printError('Failed to create hero: $e');
+    
+    if (verbose) {
+      print('[ERROR] Exception during hero creation: $e');
+    }
+  }
 }

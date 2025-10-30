@@ -50,16 +50,16 @@ void main() {
       expect(heroes[2].powerstats.strength, '70');
     });
 
-    test('should create hero with specific publisher', () {
-      final marvelHero = TestDataFactory.createMarvelHero('Spider-Man');
-      final dcHero = TestDataFactory.createDCHero('Batman');
+    test('should handle different publishers correctly', () {
+      final marvelHero = TestDataFactory.createMarvelHero(name: 'Spider-Man');
+      final dcHero = TestDataFactory.createDCHero(name: 'Batman');
 
       expect(marvelHero.name, 'Spider-Man');
       expect(marvelHero.biography.publisher, 'Marvel Comics');
-      
       expect(dcHero.name, 'Batman');
       expect(dcHero.biography.publisher, 'DC Comics');
     });
+
 
     test('should convert to and from JSON', () {
       final originalHero = TestDataFactory.createTestHero();

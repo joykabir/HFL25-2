@@ -1,7 +1,7 @@
-import 'package:v04/api_exception.dart';
-import 'package:v04/custom_http_exception.dart';
-import 'package:v04/data_persistence_exception.dart';
-import 'package:v04/validation_exception.dart';
+import 'package:v04/exceptions/api_exception.dart';
+import 'package:v04/exceptions/custom_http_exception.dart';
+import 'package:v04/exceptions/data_persistence_exception.dart';
+import 'package:v04/exceptions/validation_exception.dart';
 
 
 class ErrorHandler {
