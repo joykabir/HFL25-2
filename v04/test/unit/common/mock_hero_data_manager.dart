@@ -62,6 +62,11 @@ class MockHeroDataManager implements HeroDataManaging {
     return sorted;
   }
 
+  bool isExternalHeroAlreadySaved(String externalId) {
+  if (externalId.isEmpty) return false;
+  return _heroes.any((hero) => hero.externalId == externalId);
+}
+
   @override
   Future<void> loadHeroes() async {
     // Simulate API loading delay
@@ -80,29 +85,38 @@ class MockHeroDataManager implements HeroDataManaging {
     return true;
   }
 
+
   @override
-  Future<List<HeroModel>> searchHeroesByName(String query) async {
-    // Simulate API search delay
-    await Future.delayed(Duration(milliseconds: 400));
-    
-    if (_heroes.isEmpty) {
+    Future<List<HeroModel>> searchHeroesByName(String query) async {
+      // Simulate API search delay
+      await Future.delayed(Duration(milliseconds: 400));
+      
+      if (_heroes.isEmpty) {
+        return [];
+      }
+
+      final lowerQuery = query.toLowerCase().trim();
+      return _heroes
+          .where((hero) => hero.name.toLowerCase().contains(lowerQuery))
+          .toList();
+    }
+
+  @override
+  Future<List<HeroModel>> searchHeroesExternalByName(String name) async {
+    // Simulate external API search delay
+    await Future.delayed(Duration(milliseconds: 600));
+
+    if (name.trim().isEmpty) {
       return [];
     }
 
-    final lowerQuery = query.toLowerCase().trim();
+    final lowerQuery = name.toLowerCase().trim();
+
     return _heroes
         .where((hero) => hero.name.toLowerCase().contains(lowerQuery))
         .toList();
   }
 
-
-  @override
-  Future<List<HeroModel>> searchHeroesExternalByName(String name) {
-    // TODO: implement searchHeroesExternalByName
-    throw UnimplementedError(); 
-  }
-  
-  // Three mock heroes for testing
   List<HeroModel> _generateMockHeroes() {
     return [
       HeroModel(

@@ -5,12 +5,13 @@ import 'package:v04/exceptions/api_exception.dart';
 import 'package:v04/config/app_config.dart';
 import 'package:v04/config/constants.dart';
 import 'package:v04/exceptions/custom_http_exception.dart';
+import 'package:v04/handlers/http_handler_interface.dart';
 import 'package:v04/mappers/hero_mapper.dart';
 import 'package:v04/exceptions/validation_exception.dart';
 
 import '../models/heromodel.dart';
 
-class HttpHandler {
+class HttpHandler implements HttpHandlerInterface {
   static final HttpHandler _instance = HttpHandler._internal();
   late final String _baseUrl;
   late final String _apiKey;
@@ -25,6 +26,7 @@ class HttpHandler {
     _apiKey = config.apiKey;
   }
 
+  @override
   Future<HeroModel?> getHeroDetailsById(String externalId, {bool verbose = false}) async {
     if (externalId.trim().isEmpty) {
       throw ValidationException('Hero ID cannot be empty', 'externalId');
@@ -69,7 +71,7 @@ class HttpHandler {
     }
   }
 
-  /// Fetches superhero data from the API based on the provided name.
+  @override
   Future<List<HeroModel>> getHeroesByName(String name, {bool verbose = false}) async {
     if (name.trim().isEmpty) {
       throw ValidationException('Hero name cannot be empty', 'name');
@@ -137,7 +139,7 @@ class HttpHandler {
     }
   }
 
-  /// Tests the API connection with proper error handling.
+  @override
   Future<bool> testConnection({bool verbose = false}) async {
     try {
       if (verbose) {
@@ -168,7 +170,6 @@ class HttpHandler {
     }
   }
 
-  /// Builds the complete API URL for a specific endpoint.
   String _buildApiUrl(String endpoint) {
     return '$_baseUrl/$_apiKey/$endpoint';
   }

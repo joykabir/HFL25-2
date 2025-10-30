@@ -1,31 +1,50 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:v04/exceptions/api_exception.dart';
 import 'package:v04/config/constants.dart';
+import 'package:v04/exceptions/api_exception.dart';
 import 'package:v04/exceptions/data_persistence_exception.dart';
-import 'package:v04/handlers/http_handler.dart';
-import 'package:v04/utils/error_handler.dart';
 import 'package:v04/exceptions/validation_exception.dart';
+import 'package:v04/handlers/http_handler.dart';
+import 'package:v04/handlers/http_handler_interface.dart';
+import 'package:v04/utils/error_handler.dart';
 
 import '../models/heromodel.dart';
 import 'hero_data_managing.dart';
 
 class HeroDataManager implements HeroDataManaging {
   
-  static final HeroDataManager _instance = HeroDataManager._internal();
-  
-  final String _filePath = 'heroes.json';
+  static HeroDataManager? _instance;
+
+  final String _filePath;
   late List<HeroModel> _heroes;
-  late final HttpHandler _httpHandler;
+  late final HttpHandlerInterface? _httpHandler;
 
   factory HeroDataManager() {
-    return _instance;
+    return _instance ??= HeroDataManager._internal();
+  }
+  // Internal constructor for singleton
+  HeroDataManager._internal() 
+    : _filePath = 'heroes.json',
+      _httpHandler = HttpHandler() {
+    _heroes = [];
   }
 
-  HeroDataManager._internal() {
+  // Constructor for testing with dependency injection
+  HeroDataManager.forTesting({
+    String filePath = 'test_heroes.json',
+    HttpHandlerInterface? httpHandler,
+  }) : _filePath = filePath,
+       _httpHandler = httpHandler {
     _heroes = [];
-    _httpHandler = HttpHandler();
+  }
+
+  static void resetInstance() {
+    _instance = null;
+  }
+
+  void clearHeroes() {
+    _heroes.clear();
   }
 
   @override
@@ -153,12 +172,18 @@ Future<bool> saveHeroes() async {
 
   @override
   Future<List<HeroModel>> searchHeroesExternalByName(String name) async {
+
     if (name.trim().isEmpty) {
       throw ValidationException('Search query cannot be empty', 'name');
     }
 
+    // null check with proper error handling
+    if (_httpHandler == null) {
+      throw UnsupportedError('External search not available - HttpHandler not initialized');
+    }
+
     try {
-      return await _httpHandler.getHeroesByName(name, verbose: false);
+      return await _httpHandler!.getHeroesByName(name, verbose: false);
     } on ValidationException {
       rethrow;
     } on ApiException {
