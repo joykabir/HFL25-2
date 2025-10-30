@@ -1,54 +1,4 @@
-[![Run Dart Tests on PR](https://github.com/joykabir/HFL25-2/actions/workflows/dart-test.yml/badge.svg)](https://github.com/joykabir/HFL25-2/actions/workflows/dart-test.yml)
-[![Auto readme creation for new version folders](https://github.com/joykabir/HFL25-2/actions/workflows/add-readme.yml/badge.svg)](https://github.com/joykabir/HFL25-2/actions/workflows/add-readme.yml)
-
-[![style: lint](https://img.shields.io/badge/style-lint-4BC0F5.svg)](https://pub.dev/packages/lint)
-
-# HFL25-2: Programming with Flutter and Dart
-
-Course Projects and Assignments Repository
-
-This repository contains all programming assignments and projects for the HFL25-2 course, focusing on Flutter and Dart development.
-
-## Repository Overview
-
-### v01 - Simple Calculator
-
-Assignment 1: Console-based calculator application
-
-Features:
-- Addition and subtraction operations
-- Multiple calculations until quit
-- Input validation and error handling
-- Unit testing
-
-
-### v02 - HeroDex 3000
-
-Assignment 2: HeroDex 3000
-
-Features:
-- Add and manage superheroes with powers and attributes
-- Display heroes with detailed stats
-- Search heroes by name or powers
-- JSON storage for hero data
-- Interactive command-line interface
-- Unit testing
-
-
-### v03 - HeroDex 3000 Modular
-
-Assignment 3: Continuing v02 but with modular structure in code and more functionalities
-
-Features:
-- Refactored modular code architecture
-- Enhanced hero management system
-- Advanced search and filtering capabilities
-- Improved data persistence
-- Additional features and optimizations
-
-### v04 - Final Project
-
-### HeroDex 3000 - Superhero Tracking Application
+## Final Project v04 / HeroDex 3000 - Superhero Tracking Application
 
 Welcome to HeroDex 3000, a command-line Dart application for managing your favorite superheroes and villains.
 
@@ -162,9 +112,11 @@ dart run bin/main.dart
 
 # Run tests
 dart test test/test_all.dart --reporter=expanded
+```
 
+## Project Structure
 ```bash
-.
+v04
 ├── bin/                  # Application entry point and executable scripts
 │   ├── main.dart         # Main application logic and CLI interface
 │   └── hero_interactive.dart # Handles interactive user prompts
@@ -189,5 +141,5 @@ dart test test/test_all.dart --reporter=expanded
 ├── .gitignore            # Specifies intentionally untracked files
 ├── analysis_options.yaml # Dart analysis and linting rules
 ├── pubspec.yaml          # Project metadata and dependencies
-└── README.md             # Project description (this file)
+└── README.md             # Project description
 ```
