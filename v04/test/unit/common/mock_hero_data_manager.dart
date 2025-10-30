@@ -1,11 +1,11 @@
-import 'package:v03/models/appearance.dart';
-import 'package:v03/models/biography.dart';
-import 'package:v03/models/connections.dart';
-import 'package:v03/models/heroimage.dart';
-import 'package:v03/models/heromodel.dart';
-import 'package:v03/models/powerstats.dart';
-import 'package:v03/models/work.dart';
-import 'package:v03/services/hero_data_managing.dart';
+import 'package:v04/models/appearance.dart';
+import 'package:v04/models/biography.dart';
+import 'package:v04/models/connections.dart';
+import 'package:v04/models/heroimage.dart';
+import 'package:v04/models/heromodel.dart';
+import 'package:v04/models/powerstats.dart';
+import 'package:v04/models/work.dart';
+import 'package:v04/services/hero_data_managing.dart';
 
 class MockHeroDataManager implements HeroDataManaging {
   static final MockHeroDataManager _instance = MockHeroDataManager._internal();
@@ -52,6 +52,16 @@ class MockHeroDataManager implements HeroDataManaging {
     }
   }
 
+  List<HeroModel> getHeroesSortedByStrength() {
+    final sorted = List<HeroModel>.from(_heroes);
+    sorted.sort((a, b) {
+      final aStrength = int.tryParse(a.powerstats.strength) ?? 0;
+      final bStrength = int.tryParse(b.powerstats.strength) ?? 0;
+      return bStrength.compareTo(aStrength);
+    });
+    return sorted;
+  }
+
   @override
   Future<void> loadHeroes() async {
     // Simulate API loading delay
@@ -85,17 +95,13 @@ class MockHeroDataManager implements HeroDataManaging {
         .toList();
   }
 
-  List<HeroModel> getHeroesSortedByStrength() {
-    final sorted = List<HeroModel>.from(_heroes);
-    sorted.sort((a, b) {
-      final aStrength = int.tryParse(a.powerstats.strength) ?? 0;
-      final bStrength = int.tryParse(b.powerstats.strength) ?? 0;
-      return bStrength.compareTo(aStrength);
-    });
-    return sorted;
+
+  @override
+  Future<List<HeroModel>> searchHeroesExternalByName(String name) {
+    // TODO: implement searchHeroesExternalByName
+    throw UnimplementedError(); 
   }
-
-
+  
   // Three mock heroes for testing
   List<HeroModel> _generateMockHeroes() {
     return [

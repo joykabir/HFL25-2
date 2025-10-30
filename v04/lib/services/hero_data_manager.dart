@@ -1,7 +1,12 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:v04/api_exception.dart';
+import 'package:v04/config/constants.dart';
+import 'package:v04/data_persistence_exception.dart';
 import 'package:v04/network/http_handler.dart';
+import 'package:v04/utils/error_handler.dart';
+import 'package:v04/validation_exception.dart';
 
 import '../models/heromodel.dart';
 import 'hero_data_managing.dart';
@@ -29,21 +34,35 @@ class HeroDataManager implements HeroDataManaging {
   @override
   Future<bool> addHero(HeroModel hero) async {
     try {
+      if (hero.name.trim().isEmpty) {
+        throw ValidationException('Hero name cannot be empty', 'name');
+      }
+
       if (hero.externalId != null && hero.externalId!.isNotEmpty) {
-        final existingHero = _heroes.where((h) => h.externalId == hero.externalId).firstOrNull;
+        final existingHero =
+            _heroes.where((h) => h.externalId == hero.externalId).firstOrNull;
         if (existingHero != null) {
-          print('❌ Hero with external ID ${hero.externalId} already exists: ${existingHero.name}');
-          return false;
+          throw ValidationException(
+            'Hero with external ID ${hero.externalId} already exists',
+            'externalId',
+          );
         }
       }
 
       _heroes.add(hero);
       return await saveHeroes();
+    } on ValidationException {
+      rethrow;
     } catch (e) {
-      print('Error adding hero: $e');
-      return false;
+      final error = ErrorHandler.handleError(
+        e,
+        context: 'addHero',
+        verbose: false,
+      );
+      throw error;
     }
   }
+
   @override
   Future<bool> deleteHero(String id) async {
     try {
@@ -100,18 +119,25 @@ class HeroDataManager implements HeroDataManaging {
     }
   }
 
-  @override
-  Future<bool> saveHeroes() async{
-    try {
-      final file = File(_filePath);
-      final jsonData = jsonEncode(_heroes.map((hero) => hero.toJson()).toList());
-      await file.writeAsString(jsonData);
-      return true;
-    } catch (e) {
-      print('Error saving heroes: $e');
-      return false;
-    }
+@override
+Future<bool> saveHeroes() async {
+  try {
+    final file = File(AppConstants.heroesFileName);
+    final jsonData = jsonEncode(_heroes.map((hero) => hero.toJson()).toList());
+    await file.writeAsString(jsonData);
+    return true;
+  } catch (e) {
+    final error = ErrorHandler.handleError(
+      e,
+      context: 'saveHeroes',
+      verbose: false,
+    );
+    throw DataPersistenceException(
+      'Failed to save heroes: ${error.toString()}',
+      e,
+    );
   }
+}
   
   @override
   Future<List<HeroModel>> searchHeroesByName(String heroName) async {
@@ -126,13 +152,26 @@ class HeroDataManager implements HeroDataManaging {
   }
 
   @override
-  Future<List<HeroModel>> searchHeroesExternalByName(String name) async{
-    try {
+  Future<List<HeroModel>> searchHeroesExternalByName(String name) async {
+    if (name.trim().isEmpty) {
+      throw ValidationException('Search query cannot be empty', 'name');
+    }
 
-      return await _httpHandler.getHeroesByName(name);
+    try {
+      return await _httpHandler.getHeroesByName(name, verbose: false);
+    } on ValidationException {
+      rethrow;
+    } on ApiException {
+      rethrow;
+    } on HttpException {
+      rethrow;
     } catch (e) {
-      print('Error searching heroes externally: $e');
-      return Future.value([]);
+      final error = ErrorHandler.handleError(
+        e,
+        context: 'searchHeroesExternalByName',
+        verbose: false,
+      );
+      throw error;
     }
   }
 }

@@ -39,7 +39,7 @@ class AppConfig {
     if (!envFile.existsSync()) {
       throw Exception(
         'Error: .env file not found at: $envPath\n'
-        'Please ensure .env exists in your project root (HFL25-2/)'
+        'Please ensure .env exists in your project root (HFL25-2/v04)'
       );
     }
 

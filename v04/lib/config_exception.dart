@@ -1,0 +1,9 @@
+/// Custom exception for configuration/environment errors
+class ConfigException implements Exception {
+  final String message;
+
+  ConfigException(this.message);
+
+  @override
+  String toString() => 'ConfigException: $message';
+}

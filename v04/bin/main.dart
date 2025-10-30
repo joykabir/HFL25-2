@@ -27,12 +27,12 @@ Future<void> main(List<String> arguments) async {
     final heroDataManager = HeroDataManager();
     await heroDataManager.loadHeroes();
 
-    // Test API connection (optional - remove after testing)
+    // Test API connection when verbose is enabled
     if (verbose) {
       print('[INFO] Testing API connection...');
       final isConnected = await HttpHandler().testConnection(verbose: true);
       if (!isConnected) {
-        print('[WARN] API connection test failed. External search may not work.\n');
+        print('API connection test failed. \n');
       }
     }
     
@@ -79,7 +79,7 @@ Future<void> main(List<String> arguments) async {
         case 5:
           print('\nExiting the program!\n');
           if (verbose) {
-            print('[INFO] Gracefully closed the program.');
+            print('Gracefully closed the program.');
           }
           running = false;
           break;
@@ -138,9 +138,9 @@ Examples:
   dart run bin/main.dart --verbose
 
 When running the program:
-  1. Add Hero - Create a new hero with details
-  2. Show Heroes - Display all heroes sorted by strength
-  3. Search Heroes - Find heroes by unique name
+  1. Add Hero - Create a new hero with details locally
+  2. Show Heroes - Display all local heroes sorted by strength
+  3. Search Heroes - Find heroes by name locally
   4. Search Heroes External - Find heroes using external API
   5. Exit - Close the program
 ''');
