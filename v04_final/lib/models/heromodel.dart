@@ -9,6 +9,7 @@ import 'work.dart';
 
 class HeroModel {
   final String id;
+  final String? externalId;
   final String name;
   final Powerstats powerstats;
   final Biography biography;
@@ -19,6 +20,7 @@ class HeroModel {
 
   HeroModel({
     String? id,
+    this.externalId,
     required this.name,
     required this.powerstats,
     required this.biography,
@@ -30,7 +32,8 @@ class HeroModel {
 
   factory HeroModel.fromJson(Map<String, dynamic> json) {
     return HeroModel(
-      id: json['id'] as String?,
+      id: json['id'] ?? _generateId(),
+      externalId: json['external_id'],
       name: json['name'] ?? '',
       powerstats: Powerstats.fromJson(json['powerstats'] ?? {}),
       biography: Biography.fromJson(json['biography'] ?? {}),
@@ -44,6 +47,7 @@ class HeroModel {
   Map<String, dynamic> toJson() {
     return {
       'id': id,
+      'external_id': externalId,
       'name': name,
       'powerstats': powerstats.toJson(),
       'biography': biography.toJson(),
@@ -56,7 +60,7 @@ class HeroModel {
 
   @override
   String toString() {
-    return 'HeroModel{id: $id, name: $name, strength: ${powerstats.strength}}';
+    return 'HeroModel{id: $id, externalId: $externalId, name: $name, strength: ${powerstats.strength}}';
   }
 
   static String _generateId() {

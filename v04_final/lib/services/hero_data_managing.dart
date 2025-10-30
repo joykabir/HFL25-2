@@ -7,5 +7,6 @@ abstract class HeroDataManaging {
   Future<bool> deleteHero(String id);
   Future<void> loadHeroes();
   Future<bool> saveHeroes();
+  Future<List<HeroModel>> searchExternalHeroes(String name);
   Future<List<HeroModel>> searchHeroesByName(String name);
 }

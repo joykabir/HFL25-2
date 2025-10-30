@@ -5,6 +5,7 @@ import '../models/heromodel.dart';
 import 'hero_data_managing.dart';
 
 class HeroDataManager implements HeroDataManaging {
+  
   static final HeroDataManager _instance = HeroDataManager._internal();
   
   final String _filePath = 'heroes.json';
@@ -106,5 +107,11 @@ class HeroDataManager implements HeroDataManaging {
     return _heroes
         .where((hero) => hero.name.toLowerCase().contains(nameLowercase))
         .toList();
+  }
+  
+  @override
+  Future<List<HeroModel>> searchExternalHeroes(String name) {
+    // TODO: implement searchExternalHeroes
+    throw UnimplementedError();
   }
 }
