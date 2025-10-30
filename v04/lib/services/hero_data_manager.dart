@@ -21,9 +21,11 @@ class HeroDataManager implements HeroDataManaging {
   late final HttpHandlerInterface? _httpHandler;
 
   factory HeroDataManager() {
+    // If _instance is null, create a new one. Otherwise, return the existing one.
+    // This is essential for the singleton pattern.
     return _instance ??= HeroDataManager._internal();
   }
-  // Internal constructor for singleton
+
   HeroDataManager._internal() 
     : _filePath = 'heroes.json',
       _httpHandler = HttpHandler() {
