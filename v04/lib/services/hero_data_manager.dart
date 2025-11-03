@@ -110,6 +110,14 @@ class HeroDataManager implements HeroDataManaging {
     return sorted;
   }
 
+  List<HeroModel> getHeroesOnly() {
+    return _heroes.where((character) => character.isHero).toList();
+  }
+
+  List<HeroModel> getVillainsOnly() {
+    return _heroes.where((character) => character.isVillain).toList();
+  }
+
   bool isExternalHeroAlreadySaved(String externalId) {
     if (externalId.isEmpty) return false;
     return _heroes.any((hero) => hero.externalId == externalId);

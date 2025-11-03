@@ -167,7 +167,6 @@ dart test test/test_all.dart --reporter=expanded
 .
 ├── bin/                  # Application entry point and executable scripts
 │   ├── main.dart         # Main application logic and CLI interface
-│   └── hero_interactive.dart # Handles interactive user prompts
 ├── lib/                  # Source code
 │   ├── config/           # Application configuration (e.g., .env loading)
 │   │   └── app_config.dart

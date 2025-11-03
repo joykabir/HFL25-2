@@ -66,7 +66,8 @@ class AppConstants {
   // Menu Options
   static const List<String> menuOptions = [
     'Add hero',
-    'Show heroes',
+    'Show heroes only',
+    'Show villains only', 
     'Search heroes by name (local)',
     'Search external heroes by name (external API)',
     'Exit',

@@ -64,11 +64,12 @@ class PrintHelper {
     print('─────────────────────────────────────');
     print('  MENU:');
     print('  1. Add hero locally');
-    print('  2. Show local heroes');
-    print('  3. Search local heroes by name');
-    print('  4. Search external heroes by name (API Call)');
-    print('  5. Delete local hero');
-    print('  6. Exit');
+    print('  2. Show heroes only');
+    print('  3. Show villains only');
+    print('  4. Search local heroes by name');
+    print('  5. Search external heroes by name (API Call)');
+    print('  6. Delete local hero');
+    print('  7. Exit');
     print('─────────────────────────────────────');
   }
 
@@ -87,6 +88,62 @@ class PrintHelper {
 
     for (var hero in heroesToDisplay) {
       printHero(hero);
+    }
+
+    print('═══════════════════════════════════════\n');
+  }
+
+  static void showHeroesOnly(List<HeroModel> allCharacters) {
+    final heroes = allCharacters.where((character) => character.isHero).toList();
+    
+    if (heroes.isEmpty) {
+      print('\nNo heroes found in the database.\n');
+      return;
+    }
+
+    // Sort heroes by strength
+    heroes.sort((a, b) {
+      final aStrength = int.tryParse(a.powerstats.strength) ?? 0;
+      final bStrength = int.tryParse(b.powerstats.strength) ?? 0;
+      return bStrength.compareTo(aStrength);
+    });
+
+    print('\nHEROES ONLY (sorted by strength):');
+    print('═══════════════════════════════════════');
+    print('Found ${heroes.length} hero(s)');
+    print('═══════════════════════════════════════');
+
+    for (var hero in heroes) {
+      print('>>> ${hero.characterType.toUpperCase()} <<<');
+      printHero(hero);
+    }
+
+    print('═══════════════════════════════════════\n');
+  }
+
+  static void showVillainsOnly(List<HeroModel> allCharacters) {
+    final villains = allCharacters.where((character) => character.isVillain).toList();
+    
+    if (villains.isEmpty) {
+      print('\nNo villains found in the database.\n');
+      return;
+    }
+
+    // Sort villains by strength
+    villains.sort((a, b) {
+      final aStrength = int.tryParse(a.powerstats.strength) ?? 0;
+      final bStrength = int.tryParse(b.powerstats.strength) ?? 0;
+      return bStrength.compareTo(aStrength);
+    });
+
+    print('\nVILLAINS ONLY (sorted by strength):');
+    print('═══════════════════════════════════════');
+    print('Found ${villains.length} villain(s)');
+    print('═══════════════════════════════════════');
+
+    for (var villain in villains) {
+      print('>>> ${villain.characterType.toUpperCase()} <<<');
+      printHero(villain);
     }
 
     print('═══════════════════════════════════════\n');

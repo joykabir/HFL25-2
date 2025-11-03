@@ -1,5 +1,6 @@
 import 'package:uuid/uuid.dart';
 
+import '../config/constants.dart';
 import 'appearance.dart';
 import 'biography.dart';
 import 'connections.dart';
@@ -44,6 +45,41 @@ class HeroModel {
     );
   }
 
+  /// Returns a string representation of the character type.
+  /// Either "Hero" or "Villain".
+  String get characterType => isHero ? 'Hero' : 'Villain';
+
+  /// Returns true if the character is a hero, false if a villain.
+  /// Based on the character's alignment from their biography.
+  bool get isHero {
+    // Check if alignment is null or empty
+    final alignment = biography.alignment;
+    if (alignment.isEmpty) {
+      // For null/empty alignments, default to hero
+      // (assuming most characters in a hero database are heroes)
+      return true;
+    }
+    
+    final alignmentLower = alignment.toLowerCase().trim();
+    
+    // Check if alignment matches any hero alignments
+    if (AppConstants.heroAlignments.contains(alignmentLower)) {
+      return true;
+    }
+    
+    // Check if alignment matches any villain alignments
+    if (AppConstants.villainAlignments.contains(alignmentLower)) {
+      return false;
+    }
+    
+    // For unknown alignments not in either list, default to hero
+    return true;
+  }
+
+  /// Returns true if the character is a villain, false if a hero.
+  /// This is the inverse of isHero for convenience.
+  bool get isVillain => !isHero;
+
   Map<String, dynamic> toJson() {
     return {
       'id': id,
@@ -65,6 +101,6 @@ class HeroModel {
 
   static String _generateId() {
     const uuid = Uuid();
-    return uuid.v4();
+    return uuid.v4().trim().substring(0, 15);
   }
 }

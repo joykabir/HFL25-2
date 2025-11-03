@@ -40,7 +40,7 @@ Future<void> main(List<String> arguments) async {
 
     while (running) {
       PrintHelper.printMenu();
-      stdout.write('Choose an option (1-6): ');
+      stdout.write('Choose an option (1-7): ');
       final input = stdin.readLineSync();
       final choice = int.tryParse(input ?? '');
 
@@ -50,22 +50,26 @@ Future<void> main(List<String> arguments) async {
           break;
           
         case 2:
-          PrintHelper.showHeroes(heroDataManager.getHeroesSortedByStrength());
+          PrintHelper.showHeroesOnly(heroDataManager.heroes);
           break;
           
         case 3:
+          PrintHelper.showVillainsOnly(heroDataManager.heroes);
+          break;
+          
+        case 4:
           await SearchHelper.searchLocalHeroes(heroDataManager);
           break;
         
-        case 4:
+        case 5:
           await SearchHelper.searchExternalHeroes(heroDataManager, verbose);
           break;
           
-        case 5:
+        case 6:
           await DeleteHelper.deleteHeroInteractive(heroDataManager, verbose);
           break;
           
-        case 6:
+        case 7:
           print('\nExiting the program!\n');
           if (verbose) {
             print('[INFO] Gracefully closed the program.');
@@ -74,7 +78,7 @@ Future<void> main(List<String> arguments) async {
           break;
           
         default:
-          print('\nInvalid option. Please choose 1-6.\n');
+          print('\nInvalid option. Please choose 1-7.\n');
       }
     }
   } on FormatException catch (e) {
@@ -135,11 +139,12 @@ Features:
 
 Menu Options:
   1. Add Hero Locally - Create a new hero manually
-  2. Show Local Heroes - Display all heroes sorted by strength
-  3. Search Local Heroes - Find heroes by name in your collection
-  4. Search External Heroes - Find and import heroes from API
-  5. Delete Local Hero - Remove a hero from your collection
-  6. Exit - Close the application
+  2. Show Heroes Only - Display only heroes sorted by strength
+  3. Show Villains Only - Display only villains sorted by strength
+  4. Search Local Heroes - Find heroes by name in your collection
+  5. Search External Heroes - Find and import heroes from API
+  6. Delete Local Hero - Remove a hero from your collection
+  7. Exit - Close the application
 
 Data Storage:
   • Heroes are stored locally in heroes.json

@@ -1,10 +1,10 @@
-## Final Project v04 / HeroDex 3000 - Superhero Tracking Application
+# Final Project v04 / HeroDex 3000 - Superhero Tracking Application
 
-Welcome to HeroDex 3000, a command-line Dart application for managing your favorite superheroes and villains.
+HeroDex 3000, a command-line Dart application for managing superheroes and villains using API call to Superhero Databse
 
 ## Features
 
-This project is built adhering to specific requirements, focusing on core programming principles, data handling, and version control.
+This project is built adhering to specific requirements, focusing on core dart coding principles, data handling and modular strcuture.
 
 ### 1. Fundamentals of Dart
 
@@ -20,7 +20,7 @@ This project is built adhering to specific requirements, focusing on core progra
 
 ### 3. Local Data Persistence
 
-*   **Saving Data:** Store at least one hero's data locally (e.g., using JSON files, `shared_preferences`, or similar mechanisms).
+*   **Saving Data:** Store at least one hero's data locally (e.g., using JSON files, `heroes.json`).
 *   **Loading Data:** Ensure saved data is retrieved and available when the application starts.
 
 ### 4. Core Functionality
@@ -46,7 +46,6 @@ This project is built adhering to specific requirements, focusing on core progra
 
 ## Getting Started
 
-*(This section would typically include instructions on how to clone the repository, set up the environment, and run the application.)*
 
 ### Prerequisites
 
@@ -80,11 +79,13 @@ To run the application, use the Dart CLI:
 
 ```bash
 dart run bin/main.dart [options]
-## Setup Superhero API key
+```
+
+## Setup Superhero databse API key
 
 1. Copy `.env.example` to `.env` in the root of the project. The file is already added in gitignore:
    ```bash
-   cp .env.example .env
+   cp .env.example v04/.env
    ```
 
 2. Edit `.env` and add your actual API key:
@@ -119,7 +120,6 @@ dart test test/test_all.dart --reporter=expanded
 v04
 ├── bin/                  # Application entry point and executable scripts
 │   ├── main.dart         # Main application logic and CLI interface
-│   └── hero_interactive.dart # Handles interactive user prompts
 ├── lib/                  # Source code
 │   ├── config/           # Application configuration (e.g., .env loading)
 │   │   └── app_config.dart
@@ -131,7 +131,7 @@ v04
 │   │   ├── heromodel.dart  # Main hero data structure
 │   │   ├── powerstats.dart
 │   │   └── work.dart
-│   ├── network/          # Network-related services (API calls)
+│   ├── handlers/          # All handlers
 │   │   └── http_handler.dart
 │   └── services/         # Core business logic and data management
 │       ├── hero_data_managing.dart # Abstract interface for hero data
